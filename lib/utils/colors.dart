@@ -2,30 +2,30 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   // Primary Colors
-  static const Color primaryColor = Color(0xFF0A0F1E);    // Rich dark blue - luxury and depth
-  static const Color accentColor = Color(0xFFB8A355);     // Antique gold - premium feel
-  static const Color secondaryColor = Color(0xFF2A2D45);  // Deep purple-blue - sophistication
+  static const Color primaryColor = Color(0xFF2C3E50);    // Deep blue-gray
+  static const Color accentColor = Color(0xFF3498DB);     // Clean blue
+  static const Color secondaryColor = Color(0xFF34495E);  // Slate gray
 
   // Background Colors
-  static const Color lightColor = Color(0xFFF9F8FF);      // Warm white - elegance
-  static const Color darkColor = Color(0xFF151A30);       // Deep blue-black - depth
+  static const Color lightColor = Color(0xFFF8F9FA);      // Off-white
+  static const Color darkColor = Color(0xFF1A1A1A);       // Almost black
   
   // Metallic Accents
-  static const Color platinum = Color(0xFFE5E4E2);        // Platinum metallic
-  static const Color champagne = Color(0xFFF3E5AB);       // Champagne gold
-  static const Color titanium = Color(0xFFBEC2CB);        // Titanium metallic
-  static const Color pearl = Color(0xFFF0EAD6);           // Pearl white
+  static const Color platinum = Color(0xFFE5E7E9);        // Light metallic
+  static const Color champagne = Color(0xFFBDC3C7);       // Light silver
+  static const Color titanium = Color(0xFF95A5A6);        // Medium metallic
+  static const Color pearl = Color(0xFFFFFFFF);           // Pure white
 
   // Text Colors
-  static const Color darkTextColor = Color(0xFF151A30);   // Deep blue-black for light backgrounds
-  static const Color lightTextColor = Color(0xFFF9F8FF);  // Warm white for dark backgrounds
+  static const Color darkTextColor = Color(0xFF2C3E50);   // Deep blue-gray
+  static const Color lightTextColor = Color(0xFFFFFFFF);  // Pure white
 
   // Additional Accent Colors
-  static const Color sapphire = Color(0xFF0F52BA);        // Deep sapphire blue
-  static const Color amethyst = Color(0xFF6C4AB0);        // Rich purple
-  static const Color aquamarine = Color(0xFF79B9CA);      // Soft blue-green
+  static const Color sapphire = Color(0xFF3498DB);        // Clean blue
+  static const Color amethyst = Color(0xFF34495E);        // Slate gray
+  static const Color aquamarine = Color(0xFF1ABC9C);      // Teal
 
-  // Theme Color Scheme
+  // Theme Color Scheme and other settings remain the same
   static final ColorScheme colorScheme = ColorScheme.fromSeed(
     seedColor: primaryColor,
     primary: primaryColor,
@@ -36,53 +36,29 @@ class AppColors {
     brightness: Brightness.light,
   );
 
-  // Theme Data
-  static final ThemeData themeData = ThemeData(
-    primaryColor: primaryColor,
-    scaffoldBackgroundColor: lightColor,
-    colorScheme: colorScheme,
-    appBarTheme: AppBarTheme(
-      backgroundColor: primaryColor,
-      foregroundColor: lightTextColor,
-      elevation: 0,
-      shadowColor: champagne.withOpacity(0.3),
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: accentColor,
-        foregroundColor: darkTextColor,
-        elevation: 4,
-        shadowColor: champagne.withOpacity(0.5),
-      ),
-    ),
-    fontFamily: 'Montserrat',
-  );
-
-  // Luxury Gradient Presets
+  // Gradients
   static final LinearGradient premiumDarkGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
       primaryColor,
       secondaryColor,
-      Color(0xFF1A1B35),
+      darkColor,
     ],
     stops: const [0.0, 0.5, 1.0],
   );
 
-  // Metallic Gradient
   static final LinearGradient metallicGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
-      platinum.withOpacity(0.95),
-      titanium.withOpacity(0.8),
-      platinum.withOpacity(0.9),
+      pearl,
+      platinum.withOpacity(0.7),
+      champagne.withOpacity(0.5),
     ],
     stops: const [0.0, 0.5, 1.0],
   );
 
-  // Premium Accent Gradient
   static final LinearGradient luxuryAccentGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
@@ -94,40 +70,25 @@ class AppColors {
     stops: const [0.0, 0.5, 1.0],
   );
 
-  // Modern Tech Gradient
-  static final LinearGradient modernTechGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [
-      sapphire.withOpacity(0.9),
-      amethyst.withOpacity(0.7),
-      aquamarine.withOpacity(0.8),
-    ],
-    stops: const [0.0, 0.5, 1.0],
-  );
-
-  // Pearl Shimmer Gradient
-  static final LinearGradient pearlShimmerGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [
-      pearl.withOpacity(0.95),
-      platinum.withOpacity(0.8),
-      pearl.withOpacity(0.9),
-      champagne.withOpacity(0.3),
-    ],
-    stops: const [0.0, 0.3, 0.7, 1.0],
-  );
-
-  // Background Texture Gradient
-  static final LinearGradient subtleTextureGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [
-      lightColor,
-      pearl.withOpacity(0.3),
-      lightColor,
-    ],
-    stops: const [0.0, 0.5, 1.0],
+  // Theme Data
+  static final ThemeData themeData = ThemeData(
+    primaryColor: primaryColor,
+    scaffoldBackgroundColor: lightColor,
+    colorScheme: colorScheme,
+    appBarTheme: AppBarTheme(
+      backgroundColor: primaryColor,
+      foregroundColor: lightTextColor,
+      elevation: 2,
+      shadowColor: champagne.withOpacity(0.3),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: accentColor,
+        foregroundColor: lightTextColor,
+        elevation: 2,
+        shadowColor: champagne.withOpacity(0.4),
+      ),
+    ),
+    fontFamily: 'Montserrat',
   );
 }
