@@ -48,13 +48,13 @@ class AppColors {
     stops: const [0.0, 0.5, 1.0],
   );
 
-  static final LinearGradient metallicGradient = LinearGradient(
+   static final LinearGradient metallicGradient = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
     colors: [
       pearl,
-      platinum.withOpacity(0.7),
-      champagne.withOpacity(0.5),
+      pearl.withOpacity(0.95),
+      platinum.withOpacity(0.3),
     ],
     stops: const [0.0, 0.5, 1.0],
   );
