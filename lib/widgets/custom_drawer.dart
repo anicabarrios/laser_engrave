@@ -215,6 +215,13 @@ class CustomDrawer extends StatelessWidget {
         ),
         _buildDrawerItem(
           context,
+          icon: Icons.info_outline,
+          title: 'About',
+          route: '/about',
+          isSelected: currentRoute == '/about',
+        ),
+        _buildDrawerItem(
+          context,
           icon: Icons.design_services_outlined,
           title: 'Services',
           route: '/services',
@@ -234,13 +241,7 @@ class CustomDrawer extends StatelessWidget {
           route: '/contact',
           isSelected: currentRoute == '/contact',
         ),
-        _buildDrawerItem(
-          context,
-          icon: Icons.info_outline,
-          title: 'About',
-          route: '/about',
-          isSelected: currentRoute == '/about',
-        ),
+        
       ],
     );
   }
