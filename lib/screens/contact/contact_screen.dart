@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:laser_engrave/screens/contact/hero_section.dart';
+import 'package:laser_engrave/widgets/footer.dart';
 import '../../utils/colors.dart';
 import '../../utils/screen_utils.dart';
 import '../../config/responsive_breakpoints.dart';
@@ -330,11 +331,13 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
                               Expanded(child: const ContactInfo()),
                             ],
                           ),
+                          
                   ),
-                ),
+                ), const Footer(),
               ],
             ),
           ),
+         
           const FloatingContactButton(),
         ],
       ),

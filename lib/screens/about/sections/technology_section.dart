@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:laser_engrave/config/responsive_breakpoints.dart';
+import 'package:laser_engrave/screens/about/sections/hero_section.dart';
 import 'package:laser_engrave/utils/colors.dart';
 import 'package:laser_engrave/utils/screen_utils.dart';
+
 
 class TechnologySection extends StatelessWidget {
   const TechnologySection({super.key});
@@ -18,43 +20,63 @@ class TechnologySection extends StatelessWidget {
         horizontal: padding,
       ),
       decoration: BoxDecoration(
-        gradient: AppColors.premiumDarkGradient,
-      ),
-      child: Center(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 1200),
-          child: Column(
-            children: [
-              Text(
-                'Our Technology',
-                style: TextStyle(
-                  fontSize: ScreenUtils.getResponsiveFontSize(context, 36),
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.lightTextColor,
-                  letterSpacing: 0.5,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'State-of-the-Art Equipment & Capabilities',
-                style: TextStyle(
-                  fontSize: ScreenUtils.getResponsiveFontSize(context, 18),
-                  color: AppColors.lightTextColor.withOpacity(0.9),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 60),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _technologies.length,
-                itemBuilder: (context, index) =>
-                    _TechnologyCard(tech: _technologies[index]),
-              ),
-            ],
-          ),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.pearl,
+            AppColors.pearl.withOpacity(0.95),
+            AppColors.platinum.withOpacity(0.9),
+          ],
+          stops: const [0.0, 0.3, 1.0],
         ),
+      ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: CustomPaint(
+              painter: GridPatternPainter(
+                color: AppColors.sapphire.withOpacity(0.08),
+              ),
+            ),
+          ),
+          Center(
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 1200),
+              child: Column(
+                children: [
+                  Text(
+                    'Our Technology',
+                    style: TextStyle(
+                      fontSize: ScreenUtils.getResponsiveFontSize(context, 36),
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.darkTextColor,
+                      letterSpacing: 0.5,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'State-of-the-Art Equipment & Capabilities',
+                    style: TextStyle(
+                      fontSize: ScreenUtils.getResponsiveFontSize(context, 18),
+                      color: AppColors.darkTextColor.withOpacity(0.8),
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 60),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: _technologies.length,
+                    itemBuilder: (context, index) =>
+                        _TechnologyCard(tech: _technologies[index]),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -75,7 +97,16 @@ class _TechnologyCard extends StatelessWidget {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        gradient: AppColors.metallicGradient,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppColors.pearl,
+            AppColors.pearl.withOpacity(0.95),
+            AppColors.platinum.withOpacity(0.9),
+          ],
+          stops: const [0.0, 0.3, 1.0],
+        ),
         boxShadow: [
           BoxShadow(
             color: AppColors.darkColor.withOpacity(0.1),
@@ -92,8 +123,28 @@ class _TechnologyCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.sapphire.withOpacity(0.1),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.sapphire.withOpacity(0.15),
+                      AppColors.aquamarine.withOpacity(0.15),
+                    ],
+                  ),
                   borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.sapphire.withOpacity(0.1),
+                      blurRadius: 8,
+                      spreadRadius: 2,
+                    ),
+                    BoxShadow(
+                      color: Colors.white.withOpacity(0.7),
+                      blurRadius: 8,
+                      spreadRadius: -2,
+                      offset: const Offset(-2, -2),
+                    ),
+                  ],
                 ),
                 child: Icon(
                   tech['icon'],

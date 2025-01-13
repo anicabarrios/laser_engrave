@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:laser_engrave/widgets/footer.dart';
 import '../../widgets/custom_drawer.dart';
 import '../../screens/home/floating_contact_button.dart';
 import '../../utils/colors.dart';
@@ -50,10 +51,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 const ProjectSection(),
                 const TestimonialSection(),
                 const CTASection(),
+                 const Footer(),
               ],
             ),
           ),
-          
+
           // Floating Contact Button
           const FloatingContactButton(),
         ],
