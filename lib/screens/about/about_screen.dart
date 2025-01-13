@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:laser_engrave/screens/home/floating_contact_button.dart';
 import '../../widgets/custom_drawer.dart';
-
+import '../../widgets/footer.dart';
 import '../../utils/colors.dart';
 import 'sections/hero_section.dart';
 import 'sections/vision_section.dart';
@@ -49,16 +49,15 @@ class _AboutScreenState extends State<AboutScreen> {
                 const TeamSection(),
                 const ProcessSection(),
                 const TechnologySection(),
-                
-                // Footer-like spacing
-                Container(
-                  height: 80,
-                  color: AppColors.darkColor,
-                ),
+                 const Footer(),
+
+               
+               
               ],
             ),
           ),
-          
+         
+
           // Add floating contact button for consistency with home screen
           const FloatingContactButton(),
         ],
