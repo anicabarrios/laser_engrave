@@ -147,7 +147,7 @@ class _FloatingContactButtonState extends State<FloatingContactButton> with Sing
               const SizedBox(width: 8),
               Text(
                 label,
-                style: TextStyle(
+                style: const TextStyle(
                   color: AppColors.darkTextColor,
                   fontWeight: FontWeight.w500,
                 ),

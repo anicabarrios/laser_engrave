@@ -101,7 +101,7 @@ class Footer extends StatelessWidget {
             color: AppColors.sapphire.withOpacity(0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Row(
+          child: const Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
@@ -109,10 +109,10 @@ class Footer extends StatelessWidget {
                 size: 32,
                 color: AppColors.sapphire,
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12),
               Text(
                 AppConfig.appName,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
@@ -224,7 +224,7 @@ class Footer extends StatelessWidget {
         onTap: () {},
         child: Row(
           children: [
-            Icon(
+            const Icon(
               Icons.arrow_forward,
               size: 16,
               color: AppColors.sapphire,

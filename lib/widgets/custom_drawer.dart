@@ -121,7 +121,6 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  // Rest of the existing methods remain the same...
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
@@ -138,7 +137,7 @@ class CustomDrawer extends StatelessWidget {
         children: [
           _buildLogoContainer(),
           const SizedBox(height: 16),
-          Text(
+          const Text(
             AppConfig.appName,
             style: TextStyle(
               color: AppColors.darkTextColor,
@@ -180,7 +179,7 @@ class CustomDrawer extends StatelessWidget {
           ),
         ],
       ),
-      child: Icon(
+      child: const Icon(
         Icons.precision_manufacturing,
         size: 44,
         color: AppColors.sapphire,
@@ -219,13 +218,6 @@ class CustomDrawer extends StatelessWidget {
           title: 'About',
           route: '/about',
           isSelected: currentRoute == '/about',
-        ),
-        _buildDrawerItem(
-          context,
-          icon: Icons.design_services_outlined,
-          title: 'Services',
-          route: '/services',
-          isSelected: currentRoute == '/services',
         ),
         _buildDrawerItem(
           context,
@@ -285,14 +277,14 @@ class CustomDrawer extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          const Row(
             children: [
               Icon(
                 Icons.contact_support_outlined,
                 size: 20,
                 color: AppColors.sapphire,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8),
               Text(
                 'Contact Information',
                 style: TextStyle(

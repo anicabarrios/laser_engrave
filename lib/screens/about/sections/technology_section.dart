@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:laser_engrave/config/responsive_breakpoints.dart';
-import 'package:laser_engrave/screens/about/sections/hero_section.dart';
 import 'package:laser_engrave/utils/colors.dart';
 import 'package:laser_engrave/utils/screen_utils.dart';
+import 'package:laser_engrave/widgets/grid_pattern_painter.dart';
 
 
 class TechnologySection extends StatelessWidget {
@@ -82,126 +82,160 @@ class TechnologySection extends StatelessWidget {
   }
 }
 
-class _TechnologyCard extends StatelessWidget {
+class _TechnologyCard extends StatefulWidget {
   final Map<String, dynamic> tech;
 
   const _TechnologyCard({required this.tech});
+
+  @override
+  State<_TechnologyCard> createState() => _TechnologyCardState();
+}
+
+class _TechnologyCardState extends State<_TechnologyCard> {
+  bool isHovered = false;
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 24),
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.pearl,
-            AppColors.pearl.withOpacity(0.95),
-            AppColors.platinum.withOpacity(0.9),
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        margin: const EdgeInsets.only(bottom: 24),
+        padding: const EdgeInsets.all(24),
+        // Apply a slight scale transform when hovered.
+        transform: Matrix4.identity()..scale(isHovered ? 1.02 : 1.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          // Change gradient based on hover state
+          gradient: isHovered
+              ? LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.pearl,
+                    AppColors.pearl.withOpacity(0.98),
+                    AppColors.platinum.withOpacity(0.95),
+                  ],
+                  stops: const [0.0, 0.5, 1.0],
+                )
+              : LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.pearl,
+                    AppColors.pearl.withOpacity(0.95),
+                    AppColors.platinum.withOpacity(0.9),
+                  ],
+                  stops: const [0.0, 0.3, 1.0],
+                ),
+          boxShadow: [
+            BoxShadow(
+              color: isHovered
+                  ? AppColors.sapphire.withOpacity(0.4)
+                  : AppColors.darkColor.withOpacity(0.1),
+              blurRadius: isHovered ? 20 : 10,
+              offset: Offset(0, isHovered ? 8 : 4),
+              spreadRadius: isHovered ? 2 : 0,
+            ),
           ],
-          stops: const [0.0, 0.3, 1.0],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.darkColor.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      AppColors.sapphire.withOpacity(0.15),
-                      AppColors.aquamarine.withOpacity(0.15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Top row with icon and technology details.
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        AppColors.sapphire.withOpacity(0.15),
+                        AppColors.aquamarine.withOpacity(0.15),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.sapphire.withOpacity(0.1),
+                        blurRadius: 8,
+                        spreadRadius: 2,
+                      ),
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.7),
+                        blurRadius: 8,
+                        spreadRadius: -2,
+                        offset: const Offset(-2, -2),
+                      ),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.sapphire.withOpacity(0.1),
-                      blurRadius: 8,
-                      spreadRadius: 2,
-                    ),
-                    BoxShadow(
-                      color: Colors.white.withOpacity(0.7),
-                      blurRadius: 8,
-                      spreadRadius: -2,
-                      offset: const Offset(-2, -2),
-                    ),
-                  ],
+                  child: Icon(
+                    widget.tech['icon'],
+                    size: 24,
+                    color: AppColors.sapphire,
+                  ),
                 ),
-                child: Icon(
-                  tech['icon'],
-                  size: 24,
-                  color: AppColors.sapphire,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      tech['name'],
-                      style: TextStyle(
-                        fontSize: ScreenUtils.getResponsiveFontSize(context, 20),
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.darkTextColor,
-                      ),
-                    ),
-                    Text(
-                      tech['type'],
-                      style: TextStyle(
-                        fontSize: ScreenUtils.getResponsiveFontSize(context, 14),
-                        color: AppColors.sapphire,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          if (!isSmallScreen)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+                const SizedBox(width: 16),
                 Expanded(
-                  flex: 2,
-                  child: _buildDescription(context, tech),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.tech['name'],
+                        style: TextStyle(
+                          fontSize:
+                              ScreenUtils.getResponsiveFontSize(context, 20),
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.darkTextColor,
+                        ),
+                      ),
+                      Text(
+                        widget.tech['type'],
+                        style: TextStyle(
+                          fontSize:
+                              ScreenUtils.getResponsiveFontSize(context, 14),
+                          color: AppColors.sapphire,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(width: 24),
-                Expanded(
-                  child: _buildSpecifications(context, tech),
-                ),
-              ],
-            )
-          else
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildDescription(context, tech),
-                const SizedBox(height: 16),
-                _buildSpecifications(context, tech),
               ],
             ),
-        ],
+            const SizedBox(height: 16),
+            // Layout adjustment based on screen size.
+            if (!isSmallScreen)
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: _buildDescription(context, widget.tech),
+                  ),
+                  const SizedBox(width: 24),
+                  Expanded(
+                    child: _buildSpecifications(context, widget.tech),
+                  ),
+                ],
+              )
+            else
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDescription(context, widget.tech),
+                  const SizedBox(height: 16),
+                  _buildSpecifications(context, widget.tech),
+                ],
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -244,32 +278,36 @@ class _TechnologyCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        ...tech['specifications'].map<Widget>((spec) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.check_circle,
-                    size: 16,
-                    color: AppColors.sapphire,
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      spec,
-                      style: TextStyle(
-                        fontSize: ScreenUtils.getResponsiveFontSize(context, 14),
-                        color: AppColors.darkTextColor.withOpacity(0.7),
-                      ),
+        ...tech['specifications'].map<Widget>(
+          (spec) => Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.check_circle,
+                  size: 16,
+                  color: AppColors.sapphire,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    spec,
+                    style: TextStyle(
+                      fontSize:
+                          ScreenUtils.getResponsiveFontSize(context, 14),
+                      color: AppColors.darkTextColor.withOpacity(0.7),
                     ),
                   ),
-                ],
-              ),
-            )),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
 }
+
 
 final List<Map<String, dynamic>> _technologies = [
   {

@@ -3,8 +3,131 @@ import '../../config/app_config.dart';
 import '../../utils/colors.dart';
 import '../../widgets/grid_pattern_painter.dart';
 
+/// A custom widget that adds a hover effect to its child.
+/// When hovered, the card scales up slightly and its shadow deepens.
+class HoverGlassCard extends StatefulWidget {
+  final Widget child;
+  const HoverGlassCard({Key? key, required this.child}) : super(key: key);
+
+  @override
+  _HoverGlassCardState createState() => _HoverGlassCardState();
+}
+
+class _HoverGlassCardState extends State<HoverGlassCard> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeInOut,
+        // Center the transform so the card expands equally in all directions.
+        transform: Matrix4.identity()..scale(_isHovered ? 1.05 : 1.0),
+        transformAlignment: Alignment.center,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              AppColors.pearl,
+              AppColors.pearl.withOpacity(0.95),
+              AppColors.platinum.withOpacity(0.9),
+            ],
+            stops: const [0.0, 0.3, 1.0],
+          ),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: _isHovered
+              ? [
+                  BoxShadow(
+                    color: AppColors.darkColor.withOpacity(0.15),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : [
+                  BoxShadow(
+                    color: AppColors.darkColor.withOpacity(0.05),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+        ),
+        child: widget.child,
+      ),
+    );
+  }
+}
+
+/// A custom widget for social icons with a hover effect.
+/// When hovered, the icon scales up and its shadow becomes more pronounced.
+class HoverSocialIcon extends StatefulWidget {
+  final IconData icon;
+  final String label;
+  const HoverSocialIcon({Key? key, required this.icon, required this.label})
+      : super(key: key);
+
+  @override
+  _HoverSocialIconState createState() => _HoverSocialIconState();
+}
+
+class _HoverSocialIconState extends State<HoverSocialIcon> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: widget.label,
+      child: MouseRegion(
+        onEnter: (_) => setState(() => _isHovered = true),
+        onExit: (_) => setState(() => _isHovered = false),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeInOut,
+          transform: Matrix4.identity()..scale(_isHovered ? 1.2 : 1.0),
+          transformAlignment: Alignment.center,
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.pearl.withOpacity(0.9),
+                AppColors.platinum.withOpacity(0.7),
+              ],
+            ),
+            boxShadow: _isHovered
+                ? [
+                    BoxShadow(
+                      color: AppColors.darkColor.withOpacity(0.1),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]
+                : [
+                    BoxShadow(
+                      color: AppColors.darkColor.withOpacity(0.05),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+          ),
+          child: Icon(
+            widget.icon,
+            size: 20,
+            color: AppColors.sapphire,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class ContactInfo extends StatelessWidget {
-  const ContactInfo({Key? key}) : super(key: key);
+  const ContactInfo({super.key});
 
   Widget _buildSectionTitle(String title, String subtitle, {bool light = false}) {
     return Column(
@@ -31,32 +154,6 @@ class ContactInfo extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildGlassCard({required Widget child}) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.pearl,
-            AppColors.pearl.withOpacity(0.95),
-            AppColors.platinum.withOpacity(0.9),
-          ],
-          stops: const [0.0, 0.3, 1.0],
-        ),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.darkColor.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: child,
     );
   }
 
@@ -112,7 +209,7 @@ class ContactInfo extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                     color: AppColors.darkTextColor,
@@ -177,14 +274,14 @@ class ContactInfo extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.access_time,
                   size: 24,
                   color: AppColors.sapphire,
                 ),
               ),
               const SizedBox(width: 16),
-              Text(
+              const Text(
                 'Business Hours',
                 style: TextStyle(
                   fontSize: 16,
@@ -220,7 +317,7 @@ class ContactInfo extends StatelessWidget {
           ),
           Text(
             hours,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.w500,
               color: AppColors.darkTextColor,
               fontSize: 14,
@@ -236,7 +333,7 @@ class ContactInfo extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Connect With Us',
           style: TextStyle(
             fontSize: 16,
@@ -249,46 +346,15 @@ class ContactInfo extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            _buildSocialIconGlass(Icons.facebook, 'Facebook'),
+            // Use the new HoverSocialIcon widget for each social icon.
+            HoverSocialIcon(icon: Icons.facebook, label: 'Facebook'),
             const SizedBox(width: 16),
-            _buildSocialIconGlass(Icons.camera_alt_outlined, 'Instagram'),
+            HoverSocialIcon(icon: Icons.camera_alt_outlined, label: 'Instagram'),
             const SizedBox(width: 16),
-            _buildSocialIconGlass(Icons.connect_without_contact_outlined, 'LinkedIn'),
+            HoverSocialIcon(icon: Icons.connect_without_contact_outlined, label: 'LinkedIn'),
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildSocialIconGlass(IconData icon, String label) {
-    return Tooltip(
-      message: label,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              AppColors.pearl.withOpacity(0.9),
-              AppColors.platinum.withOpacity(0.7),
-            ],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.darkColor.withOpacity(0.05),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Icon(
-          icon,
-          size: 20,
-          color: AppColors.sapphire,
-        ),
-      ),
     );
   }
 
@@ -322,7 +388,7 @@ class ContactInfo extends StatelessWidget {
           Positioned.fill(
             child: CustomPaint(
               painter: GridPatternPainter(
-                color: AppColors.sapphire.withOpacity(0.08)
+                color: AppColors.sapphire.withOpacity(0.08),
               ),
             ),
           ),
@@ -335,7 +401,7 @@ class ContactInfo extends StatelessWidget {
                 light: false,
               ),
               const SizedBox(height: 40),
-              _buildGlassCard(
+              HoverGlassCard(
                 child: _buildContactItem(
                   icon: Icons.location_on_outlined,
                   title: 'Visit Us',
@@ -344,7 +410,7 @@ class ContactInfo extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              _buildGlassCard(
+              HoverGlassCard(
                 child: _buildContactItem(
                   icon: Icons.phone_outlined,
                   title: 'Call Us',
@@ -354,7 +420,7 @@ class ContactInfo extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              _buildGlassCard(
+              HoverGlassCard(
                 child: _buildContactItem(
                   icon: Icons.email_outlined,
                   title: 'Email Us',
@@ -364,7 +430,7 @@ class ContactInfo extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 40),
-              _buildGlassCard(
+              HoverGlassCard(
                 child: _buildBusinessHoursContent(),
               ),
               const Spacer(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/screen_utils.dart';
 import '../../../config/responsive_breakpoints.dart';
+import '../../../widgets/grid_pattern_painter.dart';
 
 class ProjectSection extends StatelessWidget {
   const ProjectSection({super.key});
@@ -39,62 +40,82 @@ class ProjectSection extends StatelessWidget {
         horizontal: padding,
       ),
       decoration: BoxDecoration(
-        gradient: AppColors.premiumDarkGradient,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white,
+            Colors.white.withOpacity(0.95),
+            AppColors.platinum.withOpacity(0.9),
+          ],
+          stops: const [0.0, 0.3, 1.0],
+        ),
       ),
-      child: Column(
+      child: Stack(
         children: [
-          Text(
-            'Featured Projects',
-            style: TextStyle(
-              fontSize: ScreenUtils.getResponsiveFontSize(context, 36),
-              fontWeight: FontWeight.bold,
-              color: AppColors.lightTextColor,
-              letterSpacing: 0.5,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Discover our latest work and innovative solutions',
-            style: TextStyle(
-              fontSize: ScreenUtils.getResponsiveFontSize(context, 18),
-              color: AppColors.lightTextColor.withOpacity(0.9),
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 60),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return Wrap(
-                spacing: 30,
-                runSpacing: 30,
-                children: projects.map((project) => SizedBox(
-                  width: constraints.maxWidth < 600 
-                      ? constraints.maxWidth 
-                      : (constraints.maxWidth - 60) / 3,
-                  child: _buildProjectCard(context, project),
-                )).toList(),
-              );
-            },
-          ),
-          const SizedBox(height: 40),
-          ElevatedButton.icon(
-            onPressed: () {
-              Navigator.pushNamed(context, '/gallery');
-            },
-            icon: const Icon(Icons.photo_library),
-            label: const Text('View All Projects'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.accentColor,
-              foregroundColor: AppColors.lightTextColor,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 32,
-                vertical: 20,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+          Positioned.fill(
+            child: CustomPaint(
+              painter: GridPatternPainter(
+                color: AppColors.sapphire.withOpacity(0.08),
               ),
             ),
+          ),
+          Column(
+            children: [
+              Text(
+                'Featured Projects',
+                style: TextStyle(
+                  fontSize: ScreenUtils.getResponsiveFontSize(context, 36),
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.darkTextColor,
+                  letterSpacing: 0.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Discover our latest work and innovative solutions',
+                style: TextStyle(
+                  fontSize: ScreenUtils.getResponsiveFontSize(context, 18),
+                  color: AppColors.darkTextColor.withOpacity(0.7),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 60),
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  return Wrap(
+                    spacing: 30,
+                    runSpacing: 30,
+                    children: projects.map((project) => SizedBox(
+                      width: constraints.maxWidth < 600 
+                          ? constraints.maxWidth 
+                          : (constraints.maxWidth - 60) / 3,
+                      child: _buildProjectCard(context, project),
+                    )).toList(),
+                  );
+                },
+              ),
+              const SizedBox(height: 40),
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/gallery');
+                },
+                icon: const Icon(Icons.photo_library),
+                label: const Text('View All Projects'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.sapphire,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 20,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -111,7 +132,7 @@ class ProjectSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         child: Container(
           decoration: BoxDecoration(
-            color: AppColors.pearl,
+            color: Colors.white,
             boxShadow: [
               BoxShadow(
                 color: AppColors.darkColor.withOpacity(0.1),

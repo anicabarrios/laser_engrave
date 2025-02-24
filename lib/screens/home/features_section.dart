@@ -1,23 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:laser_engrave/models/feature.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/screen_utils.dart';
 import '../../../config/responsive_breakpoints.dart';
 
-class Feature {
-  final String title;
-  final String description;
-  final IconData icon;
-  final List<String> capabilities;
-  final String imageUrl;
-
-  const Feature({
-    required this.title,
-    required this.description,
-    required this.icon,
-    required this.capabilities,
-    required this.imageUrl,
-  });
-}
 
 class FeaturesSection extends StatefulWidget {
   const FeaturesSection({super.key});
@@ -28,7 +14,7 @@ class FeaturesSection extends StatefulWidget {
 
 class _FeaturesSectionState extends State<FeaturesSection> {
   final List<Feature> features = [
-    Feature(
+    const Feature(
       title: 'Precision Metal Marking',
       description: 'High-precision laser marking for industrial components and metal surfaces.',
       icon: Icons.precision_manufacturing,
@@ -41,7 +27,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
       ],
       imageUrl: 'assets/images/metal_marking.jpg',
     ),
-    Feature(
+    const Feature(
       title: 'Custom Wood Engraving',
       description: 'Artisanal wood engraving for personalized gifts and decorative items.',
       icon: Icons.carpenter,
@@ -54,7 +40,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
       ],
       imageUrl: 'assets/images/wood_engraving.jpg',
     ),
-    Feature(
+    const Feature(
       title: 'Jewelry Customization',
       description: 'Delicate engraving work for precious metals and jewelry pieces.',
       icon: Icons.diamond,
@@ -67,7 +53,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
       ],
       imageUrl: 'assets/images/jewelry.jpg',
     ),
-    Feature(
+    const Feature(
       title: 'Corporate Solutions',
       description: 'Comprehensive marking solutions for business and industrial applications.',
       icon: Icons.business,
@@ -80,7 +66,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
       ],
       imageUrl: 'assets/images/corporate.jpg',
     ),
-    Feature(
+    const Feature(
       title: 'Promotional Products',
       description: 'Custom engraving for marketing materials and promotional items.',
       icon: Icons.campaign,
@@ -93,7 +79,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
       ],
       imageUrl: 'assets/images/promotional.jpg',
     ),
-    Feature(
+    const Feature(
       title: 'Artistic Services',
       description: 'Creative laser applications for artists and designers.',
       icon: Icons.palette,
@@ -330,7 +316,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
             ),
           ),
           const SizedBox(height: 32),
-          Text(
+          const Text(
             'Key Capabilities:',
             style: TextStyle(
               fontSize: 18,
@@ -358,7 +344,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.check_circle_outline,
                       size: 16,
                       color: AppColors.sapphire,
@@ -366,7 +352,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
                     const SizedBox(width: 8),
                     Text(
                       capability,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: AppColors.darkTextColor,
                         fontSize: 14,
                       ),
