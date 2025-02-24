@@ -16,21 +16,21 @@ class _TestimonialSectionState extends State<TestimonialSection> {
   int _currentSlide = 0;
 
   final List<Testimonial> testimonials = [
-    Testimonial(
+    const Testimonial(
       name: "Michael Brown",
       role: "Product Manager",
       company: "TechCorp Industries",
       content: "The precision and quality of their laser engraving work exceeded our expectations. Their attention to detail and professional approach made them the perfect partner for our product customization needs.",
       rating: 5.0,
     ),
-    Testimonial(
+    const Testimonial(
       name: "Sarah Johnson",
       role: "Creative Director",
       company: "Design Studios Co.",
       content: "Working with the team was a fantastic experience. They brought our design concepts to life with incredible accuracy and helped us create unique pieces that our clients love.",
       rating: 5.0,
     ),
-    Testimonial(
+    const Testimonial(
       name: "David Martinez",
       role: "Operations Manager",
       company: "Industrial Solutions Ltd.",
@@ -161,7 +161,7 @@ class _TestimonialSectionState extends State<TestimonialSection> {
         children: [
           Row(
             children: List.generate(5, (index) {
-              return Icon(
+              return const Icon(
                 Icons.star,
                 size: 20,
                 color: AppColors.sapphire,
@@ -186,7 +186,7 @@ class _TestimonialSectionState extends State<TestimonialSection> {
                 backgroundColor: AppColors.sapphire.withOpacity(0.1),
                 child: Text(
                   testimonial.name[0],
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: AppColors.sapphire,
                     fontWeight: FontWeight.bold,
                     fontSize: 18,

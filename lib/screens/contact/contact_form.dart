@@ -171,7 +171,7 @@ class _ContactFormState extends State<ContactForm> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.sapphire, width: 2),
+          borderSide: const BorderSide(color: AppColors.sapphire, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -211,11 +211,11 @@ class _ContactFormState extends State<ContactForm> {
         prefixIcon: Icon(prefixIcon, color: AppColors.sapphire.withOpacity(0.8)),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.platinum),
+          borderSide: const BorderSide(color: AppColors.platinum),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.platinum),
+          borderSide: const BorderSide(color: AppColors.platinum),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -245,7 +245,7 @@ class _ContactFormState extends State<ContactForm> {
           builder: (context, child) {
             return Theme(
               data: Theme.of(context).copyWith(
-                colorScheme: ColorScheme.light(
+                colorScheme: const ColorScheme.light(
                   primary: AppColors.sapphire,
                   onPrimary: AppColors.lightTextColor,
                   surface: AppColors.pearl,
@@ -263,7 +263,7 @@ class _ContactFormState extends State<ContactForm> {
       child: InputDecorator(
         decoration: InputDecoration(
           labelText: 'Preferred Start Date (Optional)',
-          prefixIcon: Icon(Icons.calendar_today_outlined, color: AppColors.sapphire),
+          prefixIcon: const Icon(Icons.calendar_today_outlined, color: AppColors.sapphire),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: AppColors.darkTextColor.withOpacity(0.2)),
@@ -274,7 +274,7 @@ class _ContactFormState extends State<ContactForm> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: AppColors.sapphire, width: 2),
+            borderSide: const BorderSide(color: AppColors.sapphire, width: 2),
           ),
           filled: true,
           fillColor: Colors.white,
@@ -324,7 +324,7 @@ class _ContactFormState extends State<ContactForm> {
           ),
         ),
         child: widget.isSubmitting
-            ? SizedBox(
+            ? const SizedBox(
                 height: 24,
                 width: 24,
                 child: CircularProgressIndicator(
@@ -332,11 +332,11 @@ class _ContactFormState extends State<ContactForm> {
                   valueColor: AlwaysStoppedAnimation<Color>(AppColors.lightTextColor),
                 ),
               )
-            : Row(
+            : const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.send, size: 20, color: AppColors.lightTextColor),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12),
                   Text(
                     'Send Message',
                     style: TextStyle(

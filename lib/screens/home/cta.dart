@@ -175,8 +175,8 @@ class CTASection extends StatelessWidget {
         onPressed: () {
           // Launch phone call
         },
-        icon: Icon(Icons.phone, size: 20, color: AppColors.sapphire),
-        label: Text(
+        icon: const Icon(Icons.phone, size: 20, color: AppColors.sapphire),
+        label: const Text(
           'Call Us Now',
           style: TextStyle(
             fontSize: 16,

@@ -84,7 +84,7 @@ class _HeroSectionState extends State<HeroSection>
       children: [
         Container(
           height: 700,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -189,7 +189,7 @@ class _HeroSectionState extends State<HeroSection>
           onPressed: () => Navigator.pushNamed(context, '/gallery'),
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.lightTextColor,
-            side: BorderSide(color: AppColors.lightTextColor),
+            side: const BorderSide(color: AppColors.lightTextColor),
             padding: const EdgeInsets.symmetric(
               horizontal: 32,
               vertical: 20,
@@ -235,7 +235,7 @@ class _HeroSectionState extends State<HeroSection>
                   color: AppColors.accentColor.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.precision_manufacturing,
                   size: 48,
                   color: AppColors.lightTextColor,
@@ -315,7 +315,7 @@ class _HeroSectionState extends State<HeroSection>
               children: [
                 Text(
                   stat['title'] as String,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: AppColors.darkTextColor,
@@ -324,7 +324,7 @@ class _HeroSectionState extends State<HeroSection>
                 const SizedBox(height: 4),
                 Text(
                   stat['value'] as String,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
                     color: AppColors.sapphire,
                     fontWeight: FontWeight.w500,

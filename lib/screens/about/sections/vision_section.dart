@@ -114,10 +114,10 @@ class VisionSection extends StatelessWidget {
           color: AppColors.platinum.withOpacity(0.3),
         ),
       ),
-      child: Column(
+      child: const Column(
         children: [
           Row(
-            children: const [
+            children: [
               Expanded(
                 child: _StatItem(
                   value: '500+',
@@ -134,9 +134,9 @@ class VisionSection extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 32),
+          SizedBox(height: 32),
           Row(
-            children: const [
+            children: [
               Expanded(
                 child: _StatItem(
                   value: '50+',
