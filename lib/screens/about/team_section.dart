@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../utils/colors.dart';
-import '../../../utils/screen_utils.dart';
-import '../../../config/responsive_breakpoints.dart';
-import '../../../widgets/grid_pattern_painter.dart';
+import '../../utils/colors.dart';
+import '../../utils/screen_utils.dart';
+import '../../config/responsive_breakpoints.dart';
+import '../../widgets/grid_pattern_painter.dart';
 
 class TeamSection extends StatelessWidget {
   const TeamSection({super.key});
@@ -46,26 +46,8 @@ class TeamSection extends StatelessWidget {
               constraints: const BoxConstraints(maxWidth: 1200),
               child: Column(
                 children: [
-                  Text(
-                    'Meet Our Team',
-                    style: TextStyle(
-                      fontSize: ScreenUtils.getResponsiveFontSize(context, 36),
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.darkTextColor,
-                      letterSpacing: 0.5,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Expert craftsmen and engineers dedicated to excellence',
-                    style: TextStyle(
-                      fontSize: ScreenUtils.getResponsiveFontSize(context, 18),
-                      color: AppColors.darkTextColor.withOpacity(0.7),
-                      letterSpacing: 0.2,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  // Enhanced header section with consistent styling
+                  _buildHeader(context),
                   const SizedBox(height: 60),
                   GridView.builder(
                     shrinkWrap: true,
@@ -74,7 +56,8 @@ class TeamSection extends StatelessWidget {
                       crossAxisCount: isSmallScreen ? 1 : 3,
                       crossAxisSpacing: 30,
                       mainAxisSpacing: 30,
-                      childAspectRatio: isSmallScreen ? 1.2 : 0.8,
+                      // Adjust the aspect ratio for mobile to allow more vertical space
+                      childAspectRatio: isSmallScreen ? 0.75 : 0.8,
                     ),
                     itemCount: _teamMembers.length,
                     itemBuilder: (context, index) =>
@@ -86,6 +69,73 @@ class TeamSection extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  // New enhanced header matching other sections
+  Widget _buildHeader(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
+    
+    return Column(
+      children: [
+        // Title text
+        Text(
+          'Meet Our Team',
+          style: TextStyle(
+            fontSize: ScreenUtils.getResponsiveFontSize(context, isSmallScreen ? 32 : 36),
+            fontWeight: FontWeight.bold,
+            color: AppColors.darkTextColor,
+            letterSpacing: 0.5,
+            height: 1.2,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        
+        // Decorative divider for title
+        Container(
+          margin: const EdgeInsets.only(top: 12, bottom: 24),
+          width: isSmallScreen ? 240 : 300,
+          height: 2.5,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.sapphire.withOpacity(0.0),
+                AppColors.sapphire,
+                AppColors.sapphire.withOpacity(0.0),
+              ],
+              stops: const [0.0, 0.5, 1.0],
+            ),
+            borderRadius: BorderRadius.circular(1.25),
+          ),
+        ),
+        
+        // Subtitle with text-only color transition effect
+        Container(
+          constraints: const BoxConstraints(maxWidth: 600),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: ShaderMask(
+            shaderCallback: (bounds) => LinearGradient(
+              colors: [
+                AppColors.darkTextColor.withOpacity(0.7),
+                AppColors.sapphire,
+                AppColors.darkTextColor.withOpacity(0.7),
+              ],
+              stops: const [0.1, 0.5, 0.9],
+            ).createShader(bounds),
+            child: Text(
+              'Expert craftsmen and engineers dedicated to excellence',
+              style: TextStyle(
+                fontSize: ScreenUtils.getResponsiveFontSize(context, 18),
+                fontWeight: FontWeight.w500,
+                color: Colors.white, // The ShaderMask will override this
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -104,6 +154,9 @@ class _TeamMemberCardState extends State<_TeamMemberCard> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
+
     return MouseRegion(
       onEnter: (_) => setState(() => isHovered = true),
       onExit: (_) => setState(() => isHovered = false),
@@ -180,66 +233,68 @@ class _TeamMemberCardState extends State<_TeamMemberCard> {
             Expanded(
               flex: 2,
               child: Container(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: const BorderRadius.vertical(
                     bottom: Radius.circular(15),
                   ),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 200),
-                      style: TextStyle(
-                        fontSize: ScreenUtils.getResponsiveFontSize(
-                          context,
-                          isHovered ? 22 : 20,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AnimatedDefaultTextStyle(
+                        duration: const Duration(milliseconds: 200),
+                        style: TextStyle(
+                          fontSize: ScreenUtils.getResponsiveFontSize(
+                            context,
+                            isHovered ? 22 : (isSmallScreen ? 18 : 20),
+                          ),
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.darkTextColor,
+                          letterSpacing: 0.3,
                         ),
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.darkTextColor,
-                        letterSpacing: 0.3,
+                        child: Text(
+                          widget.member['name']!,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      child: Text(
-                        widget.member['name']!,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.2),
+                          ),
+                        ),
+                        child: Text(
+                          widget.member['role']!,
+                          style: TextStyle(
+                            fontSize: ScreenUtils.getResponsiveFontSize(context, 14),
+                            color: AppColors.sapphire,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                      child: Text(
-                        widget.member['role']!,
+                      const SizedBox(height: 8),
+                      Text(
+                        widget.member['description']!,
                         style: TextStyle(
                           fontSize: ScreenUtils.getResponsiveFontSize(context, 14),
-                          color: AppColors.sapphire,
-                          fontWeight: FontWeight.w500,
+                          color: AppColors.darkTextColor.withOpacity(0.7),
+                          height: 1.4,
                         ),
                         textAlign: TextAlign.center,
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      widget.member['description']!,
-                      style: TextStyle(
-                        fontSize: ScreenUtils.getResponsiveFontSize(context, 14),
-                        color: AppColors.darkTextColor.withOpacity(0.7),
-                        height: 1.5,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

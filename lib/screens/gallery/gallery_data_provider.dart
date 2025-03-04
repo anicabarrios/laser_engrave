@@ -30,7 +30,7 @@ class GalleryDataProvider {
   }
 
   // Get unique categories from gallery items
-  static List<String> getCategories() {
+   static List<String> getCategories() {
     final items = getGalleryItems();
     final categories = items.map((item) => item['category'] as String).toSet().toList();
     categories.insert(0, 'All');

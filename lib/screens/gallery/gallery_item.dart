@@ -237,10 +237,6 @@ class _GalleryItemState extends State<GalleryItem>
                       padding: const EdgeInsets.only(right: 8),
                       child: _buildTag(tag),
                     )),
-            if (_isHovered) ...[
-              const Spacer(),
-              _buildViewButton(),
-            ],
           ],
         ),
       ],
@@ -266,28 +262,6 @@ class _GalleryItemState extends State<GalleryItem>
           color: Colors.white,
           fontSize: 12,
         ),
-      ),
-    );
-  }
-
-  Widget _buildViewButton() {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: AppColors.sapphire,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.sapphire.withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: const Icon(
-        Icons.arrow_forward,
-        color: Colors.white,
-        size: 16,
       ),
     );
   }

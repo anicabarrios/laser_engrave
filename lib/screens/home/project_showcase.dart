@@ -32,6 +32,7 @@ class ProjectSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
+    final isTabletScreen = ResponsiveBreakpoints.isTablet(screenWidth);
     final padding = ScreenUtils.getResponsivePadding(context);
 
     return Container(
@@ -62,59 +63,73 @@ class ProjectSection extends StatelessWidget {
           ),
           Column(
             children: [
-              Text(
-                'Featured Projects',
-                style: TextStyle(
-                  fontSize: ScreenUtils.getResponsiveFontSize(context, 36),
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.darkTextColor,
-                  letterSpacing: 0.5,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Discover our latest work and innovative solutions',
-                style: TextStyle(
-                  fontSize: ScreenUtils.getResponsiveFontSize(context, 18),
-                  color: AppColors.darkTextColor.withOpacity(0.7),
-                ),
-                textAlign: TextAlign.center,
-              ),
+              // Enhanced Section Header (matching FeaturesSection style)
+              _buildHeader(context),
+              
               const SizedBox(height: 60),
+              
+              // Responsive Project Grid
               LayoutBuilder(
                 builder: (context, constraints) {
-                  return Wrap(
-                    spacing: 30,
-                    runSpacing: 30,
-                    children: projects.map((project) => SizedBox(
-                      width: constraints.maxWidth < 600 
-                          ? constraints.maxWidth 
-                          : (constraints.maxWidth - 60) / 3,
-                      child: _buildProjectCard(context, project),
-                    )).toList(),
-                  );
+                  if (isSmallScreen) {
+                    // Mobile layout (1 column)
+                    return Column(
+                      children: projects.map((project) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 30),
+                          child: FractionallySizedBox(
+                            // Making card 90% of available width on mobile
+                            widthFactor: 0.9,
+                            child: _buildProjectCard(context, project),
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  } else if (isTabletScreen) {
+                    // Tablet layout (2 columns)
+                    return Center(
+                      child: SizedBox(
+                        // Constrain the entire grid width to make cards smaller
+                        width: constraints.maxWidth * 0.9,
+                        child: Wrap(
+                          spacing: 30,
+                          runSpacing: 30,
+                          alignment: WrapAlignment.center,
+                          children: projects.map((project) {
+                            return SizedBox(
+                              width: (constraints.maxWidth * 0.9 - 30) / 2,
+                              child: _buildProjectCard(context, project),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    );
+                  } else {
+                    // Desktop layout (3 columns)
+                    return Center(
+                      child: SizedBox(
+                        // Constrain the entire grid width to make cards smaller
+                        width: constraints.maxWidth * 0.9,
+                        child: Wrap(
+                          spacing: 30,
+                          runSpacing: 30,
+                          alignment: WrapAlignment.center,
+                          children: projects.map((project) {
+                            return SizedBox(
+                              width: (constraints.maxWidth * 0.9 - 60) / 3,
+                              child: _buildProjectCard(context, project),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    );
+                  }
                 },
               ),
+              
+              // View All Button
               const SizedBox(height: 40),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/gallery');
-                },
-                icon: const Icon(Icons.photo_library),
-                label: const Text('View All Projects'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.sapphire,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 20,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
+              _buildViewAllButton(isSmallScreen),
             ],
           ),
         ],
@@ -122,105 +137,239 @@ class ProjectSection extends StatelessWidget {
     );
   }
 
-  Widget _buildProjectCard(BuildContext context, Map<String, dynamic> project) {
-    return Card(
-      elevation: 8,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.darkColor.withOpacity(0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+  // New enhanced header matching the FeaturesSection style
+  Widget _buildHeader(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
+    
+    return Column(
+      children: [
+        // Title text
+        Text(
+          'Featured Projects',
+          style: TextStyle(
+            fontSize: ScreenUtils.getResponsiveFontSize(context, isSmallScreen ? 32 : 36),
+            fontWeight: FontWeight.bold,
+            color: AppColors.darkTextColor,
+            letterSpacing: 0.5,
+            height: 1.2,
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                children: [
-                  Image.asset(
-                    project['image'],
-                    height: 240,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  Positioned(
-                    top: 16,
-                    left: 16,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.sapphire,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        project['category'],
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
+          textAlign: TextAlign.center,
+        ),
+        
+        // Decorative divider for title
+        Container(
+          margin: const EdgeInsets.only(top: 12, bottom: 24),
+          width: isSmallScreen ? 240 : 300,
+          height: 2.5,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.sapphire.withOpacity(0.0),
+                AppColors.sapphire,
+                AppColors.sapphire.withOpacity(0.0),
+              ],
+              stops: const [0.0, 0.5, 1.0],
+            ),
+            borderRadius: BorderRadius.circular(1.25),
+          ),
+        ),
+        
+        // Subtitle with text-only color transition effect
+        Container(
+          constraints: const BoxConstraints(maxWidth: 600),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: ShaderMask(
+            shaderCallback: (bounds) => LinearGradient(
+              colors: [
+                AppColors.darkTextColor.withOpacity(0.7),
+                AppColors.sapphire,
+                AppColors.darkTextColor.withOpacity(0.7),
+              ],
+              stops: const [0.1, 0.5, 0.9],
+            ).createShader(bounds),
+            child: Text(
+              'Discover our latest work and innovative solutions',
+              style: TextStyle(
+                fontSize: ScreenUtils.getResponsiveFontSize(context, 18),
+                fontWeight: FontWeight.w500,
+                color: Colors.white, // The ShaderMask will override this
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildViewAllButton(bool isSmallScreen) {
+    return ElevatedButton.icon(
+      onPressed: () {
+        // Navigate to gallery page
+      },
+      icon: const Icon(Icons.photo_library),
+      label: const Text('View All Projects'),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.sapphire,
+        foregroundColor: Colors.white,
+        padding: EdgeInsets.symmetric(
+          horizontal: isSmallScreen ? 24 : 32,
+          vertical: isSmallScreen ? 16 : 20,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProjectCard(BuildContext context, Map<String, dynamic> project) {
+    return HoverableProjectCard(
+      builder: (context, isHovered) => Card(
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Project Image with slightly taller aspect ratio (less square)
+                AspectRatio(
+                  aspectRatio: 1.2,
+                  child: Stack(
+                    children: [
+                      // Image covering the full width and height
+                      Positioned.fill(
+                        child: Image.asset(
+                          project['image'],
+                          fit: BoxFit.cover,
                         ),
                       ),
-                    ),
+                      // Category badge
+                      Positioned(
+                        top: 16,
+                        left: 16,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.sapphire,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.darkColor.withOpacity(0.2),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            project['category'],
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      project['title'],
-                      style: TextStyle(
-                        fontSize: ScreenUtils.getResponsiveFontSize(context, 20),
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.darkTextColor,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      project['description'],
-                      style: TextStyle(
-                        fontSize: ScreenUtils.getResponsiveFontSize(context, 14),
-                        color: AppColors.darkTextColor.withOpacity(0.7),
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextButton(
-                      onPressed: () {
-                        // Navigate to project details
-                      },
-                      style: TextButton.styleFrom(
-                        foregroundColor: AppColors.sapphire,
-                        padding: EdgeInsets.zero,
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('Learn More'),
-                          SizedBox(width: 8),
-                          Icon(Icons.arrow_forward, size: 16),
-                        ],
-                      ),
-                    ),
-                  ],
                 ),
+                
+                // Project Details (reduced padding)
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Title with color change on hover
+                      AnimatedDefaultTextStyle(
+                        duration: const Duration(milliseconds: 200),
+                        style: TextStyle(
+                          fontSize: ScreenUtils.getResponsiveFontSize(context, 18),
+                          fontWeight: FontWeight.bold,
+                          // Change color when hovered
+                          color: isHovered ? AppColors.sapphire : AppColors.darkTextColor,
+                        ),
+                        child: Text(project['title']),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        project['description'],
+                        style: TextStyle(
+                          fontSize: ScreenUtils.getResponsiveFontSize(context, 14),
+                          color: AppColors.darkTextColor.withOpacity(0.7),
+                          height: 1.5,
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class HoverableProjectCard extends StatefulWidget {
+  final Widget Function(BuildContext, bool) builder;
+  
+  const HoverableProjectCard({
+    Key? key, 
+    required this.builder,
+  }) : super(key: key);
+
+  @override
+  _HoverableProjectCardState createState() => _HoverableProjectCardState();
+}
+
+class _HoverableProjectCardState extends State<HoverableProjectCard> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedScale(
+        scale: _isHovered ? 1.03 : 1.0,
+        duration: const Duration(milliseconds: 200),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.darkColor.withOpacity(_isHovered ? 0.2 : 0.1),
+                blurRadius: _isHovered ? 15 : 10,
+                offset: const Offset(0, 4),
               ),
+              if (_isHovered)
+                BoxShadow(
+                  color: AppColors.sapphire.withOpacity(0.1),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
             ],
           ),
+          // Pass the hover state to the builder function
+          child: widget.builder(context, _isHovered),
         ),
       ),
     );

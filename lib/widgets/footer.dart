@@ -11,7 +11,7 @@ class Footer extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
-    final isMediumScreen = ResponsiveBreakpoints.isTablet(screenWidth);
+    final isTabletScreen = ResponsiveBreakpoints.isTablet(screenWidth);
     final padding = ScreenUtils.getResponsivePadding(context);
 
     return Container(
@@ -32,13 +32,15 @@ class Footer extends StatelessWidget {
                 child: Column(
                   children: [
                     if (isSmallScreen)
-                      _buildMobileContent()
+                      _buildMobileContent(context)
+                    else if (isTabletScreen)
+                      _buildTabletContent(context)
                     else
-                      _buildDesktopContent(isMediumScreen),
-                    const SizedBox(height: 40),
+                      _buildDesktopContent(context),
+                    SizedBox(height: isSmallScreen ? 30 : 40),
                     _buildDivider(),
-                    const SizedBox(height: 24),
-                    _buildBottomBar(isSmallScreen),
+                    SizedBox(height: isSmallScreen ? 20 : 24),
+                    _buildBottomBar(context, isSmallScreen),
                   ],
                 ),
               ),
@@ -49,51 +51,72 @@ class Footer extends StatelessWidget {
     );
   }
 
-  Widget _buildMobileContent() {
+  Widget _buildMobileContent(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildCompanyInfo(),
-        const SizedBox(height: 32),
-        _buildQuickLinks(),
-        const SizedBox(height: 32),
-        _buildServices(),
-        const SizedBox(height: 32),
+        Center(child: _buildCompanyInfo(true)),
+        const SizedBox(height: 40),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: _buildQuickLinks(context)),
+            Expanded(child: _buildServices(context)),
+          ],
+        ),
+        const SizedBox(height: 40),
         _buildContact(),
       ],
     );
   }
+  
+  Widget _buildTabletContent(BuildContext context) {
+    return Column(
+      children: [
+        _buildCompanyInfo(false),
+        const SizedBox(height: 40),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(child: _buildQuickLinks(context)),
+            Expanded(child: _buildServices(context)),
+            Expanded(child: _buildContact()),
+          ],
+        ),
+      ],
+    );
+  }
 
-  Widget _buildDesktopContent(bool isMediumScreen) {
+  Widget _buildDesktopContent(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           flex: 3,
-          child: _buildCompanyInfo(),
+          child: _buildCompanyInfo(false),
         ),
         const SizedBox(width: 40),
         Expanded(
           flex: 2,
-          child: _buildQuickLinks(),
+          child: _buildQuickLinks(context),
         ),
         const SizedBox(width: 40),
         Expanded(
           flex: 2,
-          child: _buildServices(),
+          child: _buildServices(context),
         ),
         const SizedBox(width: 40),
         Expanded(
-          flex: 2,
+          flex: 3,
           child: _buildContact(),
         ),
       ],
     );
   }
 
-  Widget _buildCompanyInfo() {
+  Widget _buildCompanyInfo(bool isMobile) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
         Container(
           padding: const EdgeInsets.all(12),
@@ -129,9 +152,11 @@ class Footer extends StatelessWidget {
             height: 1.6,
             fontSize: 16,
           ),
+          textAlign: isMobile ? TextAlign.center : TextAlign.left,
         ),
         const SizedBox(height: 24),
         Row(
+          mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
           children: [
             _buildSocialIcon(Icons.facebook, 'Facebook'),
             const SizedBox(width: 16),
@@ -144,30 +169,31 @@ class Footer extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickLinks() {
+  Widget _buildQuickLinks(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildColumnHeader('Quick Links'),
         const SizedBox(height: 20),
-        _buildFooterLink('Home', '/'),
-        _buildFooterLink('About Us', '/about'),
-        _buildFooterLink('Gallery', '/gallery'),
-        _buildFooterLink('Contact', '/contact'),
+        _buildFooterLink(context, 'Home', '/'),
+        _buildFooterLink(context, 'About Us', '/about'),
+        _buildFooterLink(context, 'Gallery', '/gallery'),
+        _buildFooterLink(context, 'Contact', '/contact'),
       ],
     );
   }
 
-  Widget _buildServices() {
+  Widget _buildServices(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildColumnHeader('Services'),
+        _buildColumnHeader('Our Services'),
         const SizedBox(height: 20),
-        _buildFooterLink('Custom Engraving', '/services'),
-        _buildFooterLink('Industrial Marking', '/services'),
-        _buildFooterLink('Gift Personalization', '/services'),
-        _buildFooterLink('Bulk Orders', '/services'),
+        // Map services to specific gallery categories
+        _buildServiceGalleryLink(context, 'Custom Engraving', 'Wood Engraving'),
+        _buildServiceGalleryLink(context, 'Industrial Marking', 'Metal'),
+        _buildServiceGalleryLink(context, 'Corporate Solutions', 'Corporate'),
+        _buildServiceGalleryLink(context, 'Artistic Services', 'Artistic'),
       ],
     );
   }
@@ -217,12 +243,15 @@ class Footer extends StatelessWidget {
     );
   }
 
-  Widget _buildFooterLink(String text, String route) {
+  Widget _buildFooterLink(BuildContext context, String text, String route) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          Navigator.pushNamed(context, route);
+        },
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(
               Icons.arrow_forward,
@@ -232,6 +261,41 @@ class Footer extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               text,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.8),
+                fontSize: 15,
+                letterSpacing: 0.3,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildServiceGalleryLink(BuildContext context, String serviceName, String category) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: InkWell(
+        onTap: () {
+          // Navigate to gallery with the specific category pre-selected
+          Navigator.pushNamed(
+            context, 
+            '/gallery',
+            arguments: {'selectedCategory': category}
+          );
+        },
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+              Icons.arrow_forward,
+              size: 16,
+              color: AppColors.sapphire,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              serviceName,
               style: TextStyle(
                 color: Colors.white.withOpacity(0.8),
                 fontSize: 15,
@@ -310,7 +374,7 @@ class Footer extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomBar(bool isSmallScreen) {
+  Widget _buildBottomBar(BuildContext context, bool isSmallScreen) {
     final currentYear = DateTime.now().year;
 
     return SizedBox(
@@ -331,7 +395,7 @@ class Footer extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildBottomLink('Privacy Policy'),
+                    _buildBottomLink(context, 'Privacy Policy', '/privacy'),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Text(
@@ -339,31 +403,45 @@ class Footer extends StatelessWidget {
                         style: TextStyle(color: Colors.white.withOpacity(0.7)),
                       ),
                     ),
-                    _buildBottomLink('Terms of Service'),
+                    _buildBottomLink(context, 'Terms of Service', '/terms'),
                   ],
                 ),
               ],
             )
           : Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '© $currentYear ${AppConfig.appName} All rights reserved.',
+                  '© $currentYear ${AppConfig.appName}. All rights reserved.',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
                     fontSize: 14,
                     letterSpacing: 0.3,
                   ),
                 ),
-               
+                Row(
+                  children: [
+                    _buildBottomLink(context, 'Privacy Policy', '/privacy'),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Text(
+                        '•',
+                        style: TextStyle(color: Colors.white.withOpacity(0.7)),
+                      ),
+                    ),
+                    _buildBottomLink(context, 'Terms of Service', '/terms'),
+                  ],
+                ),
               ],
             ),
     );
   }
 
-  Widget _buildBottomLink(String text) {
+  Widget _buildBottomLink(BuildContext context, String text, String route) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, route);
+      },
       child: Text(
         text,
         style: TextStyle(

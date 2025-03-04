@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../utils/colors.dart';
-import '../../../utils/screen_utils.dart';
-import '../../../config/responsive_breakpoints.dart';
+import '../../utils/colors.dart';
+import '../../utils/screen_utils.dart';
+import '../../config/responsive_breakpoints.dart';
 
 class VisionSection extends StatelessWidget {
   const VisionSection({super.key});

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../utils/colors.dart';
+import '../../config/responsive_breakpoints.dart';
 
 class FloatingContactButton extends StatefulWidget {
   const FloatingContactButton({super.key});
@@ -34,6 +36,7 @@ class _FloatingContactButtonState extends State<FloatingContactButton> with Sing
   }
 
   void _toggleExpanded() {
+    HapticFeedback.lightImpact();
     setState(() {
       _isExpanded = !_isExpanded;
       if (_isExpanded) {
@@ -45,6 +48,7 @@ class _FloatingContactButtonState extends State<FloatingContactButton> with Sing
   }
 
   Future<void> _launchUrl(String url) async {
+    HapticFeedback.mediumImpact();
     if (!await launchUrl(Uri.parse(url))) {
       throw Exception('Could not launch $url');
     }
@@ -52,6 +56,9 @@ class _FloatingContactButtonState extends State<FloatingContactButton> with Sing
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
+    
     return Stack(
       children: [
         // Background overlay when expanded
@@ -67,8 +74,8 @@ class _FloatingContactButtonState extends State<FloatingContactButton> with Sing
         
         // Contact buttons
         Positioned(
-          right: 16,
-          bottom: 16,
+          right: isSmallScreen ? 12 : 16,
+          bottom: isSmallScreen ? 12 : 16,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -83,20 +90,23 @@ class _FloatingContactButtonState extends State<FloatingContactButton> with Sing
                       'Call Us',
                       Icons.phone,
                       () => _launchUrl('tel:+15551234567'),
+                      isSmallScreen,
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: isSmallScreen ? 6 : 8),
                     _buildContactOption(
                       'WhatsApp',
                       Icons.chat,
                       () => _launchUrl('https://wa.me/15551234567'),
+                      isSmallScreen,
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: isSmallScreen ? 6 : 8),
                     _buildContactOption(
                       'Email',
                       Icons.email,
                       () => _launchUrl('mailto:info@example.com'),
+                      isSmallScreen,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: isSmallScreen ? 12 : 16),
                   ],
                 ),
               ),
@@ -111,6 +121,7 @@ class _FloatingContactButtonState extends State<FloatingContactButton> with Sing
                   child: Icon(
                     _isExpanded ? Icons.close : Icons.contact_support,
                     color: AppColors.lightTextColor,
+                    size: isSmallScreen ? 22 : 24,
                   ),
                 ),
               ),
@@ -121,17 +132,20 @@ class _FloatingContactButtonState extends State<FloatingContactButton> with Sing
     );
   }
 
-  Widget _buildContactOption(String label, IconData icon, VoidCallback onTap) {
+  Widget _buildContactOption(String label, IconData icon, VoidCallback onTap, bool isSmallScreen) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(isSmallScreen ? 20 : 24),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: EdgeInsets.symmetric(
+            horizontal: isSmallScreen ? 12 : 16, 
+            vertical: isSmallScreen ? 8 : 12
+          ),
           decoration: BoxDecoration(
             color: AppColors.pearl,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(isSmallScreen ? 20 : 24),
             boxShadow: [
               BoxShadow(
                 color: AppColors.darkColor.withOpacity(0.1),
@@ -143,13 +157,14 @@ class _FloatingContactButtonState extends State<FloatingContactButton> with Sing
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, color: AppColors.sapphire, size: 20),
-              const SizedBox(width: 8),
+              Icon(icon, color: AppColors.sapphire, size: isSmallScreen ? 18 : 20),
+              SizedBox(width: isSmallScreen ? 6 : 8),
               Text(
                 label,
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppColors.darkTextColor,
                   fontWeight: FontWeight.w500,
+                  fontSize: isSmallScreen ? 13 : 14,
                 ),
               ),
             ],
