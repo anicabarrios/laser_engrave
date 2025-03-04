@@ -5,14 +5,17 @@ import 'project_details_dialog.dart';
 import 'gallery_data_provider.dart';
 
 class GallerySection extends StatefulWidget {
-  const GallerySection({super.key});
+  // Add parameter for initial category selection
+  final String? initialCategory;
+  
+  const GallerySection({super.key, this.initialCategory});
 
   @override
   State<GallerySection> createState() => _GallerySectionState();
 }
 
 class _GallerySectionState extends State<GallerySection> {
-  String _selectedCategory = 'All';
+  late String _selectedCategory;
   late List<Map<String, dynamic>> _items;
   late List<String> _categories;
 
@@ -21,13 +24,19 @@ class _GallerySectionState extends State<GallerySection> {
     super.initState();
     _items = GalleryDataProvider.getGalleryItems();
     _categories = GalleryDataProvider.getCategories();
+    
+    // Set initial category if provided, otherwise default to 'All'
+    _selectedCategory = widget.initialCategory != null && 
+                       _categories.contains(widget.initialCategory) 
+                       ? widget.initialCategory! 
+                       : 'All';
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Category Filter
+        // Category Filter with selected category
         CategoryFilter(
           categories: _categories,
           selectedCategory: _selectedCategory,

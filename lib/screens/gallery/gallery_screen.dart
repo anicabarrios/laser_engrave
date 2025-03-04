@@ -60,6 +60,11 @@ class _GalleryScreenState extends State<GalleryScreen> with SingleTickerProvider
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
+    
+    // Get the selected category from route arguments if available
+    final Map<String, dynamic> args = 
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>? ?? {};
+    final String? selectedCategory = args['selectedCategory'];
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -96,7 +101,7 @@ class _GalleryScreenState extends State<GalleryScreen> with SingleTickerProvider
               useScale: true,
             ),
 
-            // Gallery Section
+            // Gallery Section (passing the selected category)
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: ScreenUtils.getResponsivePadding(context),
@@ -104,7 +109,7 @@ class _GalleryScreenState extends State<GalleryScreen> with SingleTickerProvider
               ),
               child: _buildAnimatedSection(
                 'gallery',
-                const GallerySection(),
+                GallerySection(initialCategory: selectedCategory),
                 initialDelay: 0.2,
               ),
             ),

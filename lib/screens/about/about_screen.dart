@@ -5,10 +5,10 @@ import 'package:laser_engrave/widgets/hero.dart';
 import '../../widgets/custom_drawer.dart';
 import '../../widgets/footer.dart';
 import '../../utils/colors.dart';
-import 'sections/vision_section.dart';
-import 'sections/team_section.dart';
-import 'sections/process_section.dart';
-import 'sections/technology_section.dart';
+import 'vision_section.dart';
+import 'team_section.dart';
+import 'process_section.dart';
+import 'technology_section.dart';
 
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});

@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
-import 'routes/routes.dart';
+import 'package:laser_engrave/routes/routes.dart';
 import 'utils/colors.dart';
 
 void main() {
-  runApp(const LaserEngravingApp());
+  runApp(const LaserEngraveApp());
 }
 
-class LaserEngravingApp extends StatelessWidget {
-  const LaserEngravingApp({super.key});
+class LaserEngraveApp extends StatelessWidget {
+  const LaserEngraveApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Laser Engraving Co.',
       theme: AppColors.themeData,
-      initialRoute: '/',
       routes: appRoutes,
+      initialRoute: '/',
+      debugShowCheckedModeBanner: false,
     );
   }
 }

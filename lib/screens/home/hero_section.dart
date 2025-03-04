@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../utils/colors.dart';
 import '../../../utils/screen_utils.dart';
 import '../../../config/responsive_breakpoints.dart';
+import '../../../widgets/grid_pattern_painter.dart';
 import 'dart:math' as math;
 
 class HeroSection extends StatefulWidget {
@@ -55,35 +56,46 @@ class _HeroSectionState extends State<HeroSection>
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
     final isMediumScreen = ResponsiveBreakpoints.isTablet(screenWidth);
+    
+    // Detect if on touch device for optimized animations
+    final isTouchDevice = Theme.of(context).platform == TargetPlatform.iOS || 
+                        Theme.of(context).platform == TargetPlatform.android;
 
     return Stack(
       children: [
         // Background with gradient and pattern
-        _buildBackground(),
+        _buildBackground(isSmallScreen),
         
         // Main content
-        Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: ScreenUtils.getResponsivePadding(context),
-          ),
-          child: Column(
-            children: [
-              SizedBox(height: isSmallScreen ? 80 : 100),
-              _buildMainContent(isSmallScreen, isMediumScreen),
-              const SizedBox(height: 60),
-              _buildStatsCards(isSmallScreen),
-            ],
+        SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: ScreenUtils.getResponsivePadding(context),
+            ),
+            child: Column(
+              children: [
+                // Adjusted top padding for mobile (reduced)
+                SizedBox(height: isSmallScreen ? 40 : 80),
+                _buildMainContent(isSmallScreen, isMediumScreen, isTouchDevice),
+                // Spacing between content and stats badges
+                SizedBox(height: isSmallScreen ? 30 : 60),
+                _buildStatsBadges(isSmallScreen, isMediumScreen),
+                // Extra bottom padding for mobile
+                if (isSmallScreen) const SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildBackground() {
+  Widget _buildBackground(bool isSmallScreen) {
     return Stack(
       children: [
         Container(
-          height: 700,
+          // Reduced height for mobile
+          height: isSmallScreen ? 580 : 700,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -108,99 +120,176 @@ class _HeroSectionState extends State<HeroSection>
     );
   }
 
-  Widget _buildMainContent(bool isSmallScreen, bool isMediumScreen) {
+  Widget _buildMainContent(bool isSmallScreen, bool isMediumScreen, bool isTouchDevice) {
     return Row(
       children: [
         // Left side content
         Expanded(
           flex: isSmallScreen ? 1 : 2,
-          child: FadeTransition(
-            opacity: _fadeAnimation,
-            child: SlideTransition(
-              position: _slideAnimation,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Revolutionary\nLaser Engraving',
-                    style: TextStyle(
-                      fontSize: ScreenUtils.getResponsiveFontSize(
-                        context,
-                        isSmallScreen ? 36 : 48,
+          child: isTouchDevice 
+              ? _buildContentWithoutAnimations(isSmallScreen)
+              : FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: SlideTransition(
+                    position: _slideAnimation,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: isSmallScreen ? 0 : isMediumScreen ? 40 : 100,
                       ),
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.lightTextColor,
-                      height: 1.2,
+                      child: _buildContentWithoutAnimations(isSmallScreen),
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Precision engineering meets artistic excellence',
-                    style: TextStyle(
-                      fontSize: ScreenUtils.getResponsiveFontSize(
-                        context,
-                        isSmallScreen ? 16 : 20,
-                      ),
-                      color: AppColors.lightTextColor.withOpacity(0.9),
-                      height: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  _buildActionButtons(),
-                ],
-              ),
-            ),
-          ),
+                ),
         ),
-        
-        // Right side animated content
+
+        // Right side animated content (only on larger screens)
         if (!isSmallScreen) ...[
-          const SizedBox(width: 40),
+          SizedBox(width: isMediumScreen ? 20 : 40),
           Expanded(
             flex: 2,
-            child: _buildAnimatedShowcase(),
+            child: isTouchDevice 
+                ? _buildShowcaseWithoutAnimations()
+                : _buildAnimatedShowcase(),
           ),
         ],
       ],
     );
   }
 
-  Widget _buildActionButtons() {
-    return Wrap(
-      spacing: 16,
-      runSpacing: 16,
+  Widget _buildContentWithoutAnimations(bool isSmallScreen) {
+    return Column(
+      crossAxisAlignment: isSmallScreen ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
+        Text(
+          isSmallScreen ? 'Revolutionary\nLaser Engraving' : 'Revolutionary\nLaser Engraving',
+          style: TextStyle(
+            fontSize: ScreenUtils.getResponsiveFontSize(
+              context,
+              // Increased font size for mobile
+              isSmallScreen ? 38 : 48,
+            ),
+            fontWeight: FontWeight.bold,
+            color: AppColors.lightTextColor,
+            height: 1.2,
+          ),
+          textAlign: isSmallScreen ? TextAlign.center : TextAlign.left,
+        ),
+        const SizedBox(height: 20),
+        Text(
+          'Precision engineering meets artistic excellence',
+          style: TextStyle(
+            fontSize: ScreenUtils.getResponsiveFontSize(
+              context,
+              // Increased font size for mobile
+              isSmallScreen ? 18 : 20,
+            ),
+            color: AppColors.lightTextColor.withOpacity(0.9),
+            height: 1.5,
+          ),
+          textAlign: isSmallScreen ? TextAlign.center : TextAlign.left,
+        ),
+        SizedBox(height: isSmallScreen ? 24 : 32),
+        if (isSmallScreen)
+          Center(child: _buildActionButtons(isSmallScreen))
+        else
+          _buildActionButtons(isSmallScreen),
+      ],
+    );
+  }
+
+  Widget _buildActionButtons(bool isSmallScreen) {
+    // Make buttons larger on mobile
+    final btnPadding = isSmallScreen 
+        ? const EdgeInsets.symmetric(horizontal: 30, vertical: 18)
+        : const EdgeInsets.symmetric(horizontal: 32, vertical: 20);
+    
+    // Increased font size for mobile
+    final btnFontSize = isSmallScreen ? 17.0 : 15.0;
+    
+    return Wrap(
+      spacing: isSmallScreen ? 12 : 16,
+      runSpacing: isSmallScreen ? 12 : 16,
+      alignment: isSmallScreen ? WrapAlignment.center : WrapAlignment.start,
+      children: [
+        // Start Your Project button - larger on mobile
         ElevatedButton(
           onPressed: () => Navigator.pushNamed(context, '/contact'),
           style: ElevatedButton.styleFrom(
             backgroundColor: AppColors.accentColor,
             foregroundColor: AppColors.lightTextColor,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 32,
-              vertical: 20,
-            ),
+            padding: btnPadding,
+            minimumSize: isSmallScreen ? const Size(230, 55) : null,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: const Text('Start Your Project'),
+          child: Text(
+            'Start Your Project',
+            style: TextStyle(
+              fontSize: btnFontSize,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
+        // View Gallery button - larger on mobile
         OutlinedButton(
           onPressed: () => Navigator.pushNamed(context, '/gallery'),
           style: OutlinedButton.styleFrom(
             foregroundColor: AppColors.lightTextColor,
-            side: const BorderSide(color: AppColors.lightTextColor),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 32,
-              vertical: 20,
-            ),
+            side: const BorderSide(color: AppColors.lightTextColor, width: 1.5),
+            padding: btnPadding,
+            minimumSize: isSmallScreen ? const Size(230, 55) : null,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
           ),
-          child: const Text('View Gallery'),
+          child: Text(
+            'View Gallery',
+            style: TextStyle(
+              fontSize: btnFontSize,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
       ],
+    );
+  }
+
+  Widget _buildShowcaseWithoutAnimations() {
+    return Center(
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Static rings
+          ...List.generate(3, (index) {
+            final size = 200.0 + (index * 40);
+            return Container(
+              width: size,
+              height: size,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: AppColors.accentColor.withOpacity(0.3 - (index * 0.1)),
+                  width: 2,
+                ),
+              ),
+            );
+          }),
+          // Center icon
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppColors.accentColor.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.precision_manufacturing,
+              size: 48,
+              color: AppColors.lightTextColor,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -248,128 +337,117 @@ class _HeroSectionState extends State<HeroSection>
     );
   }
 
-  Widget _buildStatsCards(bool isSmallScreen) {
+  // Updated stats section with responsive layout for all screen sizes
+  Widget _buildStatsBadges(bool isSmallScreen, bool isTabletScreen) {
     final stats = [
       {
         'icon': Icons.precision_manufacturing,
-        'title': 'Precision',
-        'value': '0.01mm Accuracy'
+        'label': 'Precision: 0.01mm Accuracy',
       },
       {
         'icon': Icons.speed,
-        'title': 'Turnaround',
-        'value': '24 Hour Service'
+        'label': 'Turnaround: 24 Hour Service',
       },
       {
         'icon': Icons.verified,
-        'title': 'Quality',
-        'value': 'ISO 9001:2015'
+        'label': 'Quality: ISO 9001:2015',
       },
     ];
 
-    return Container(
-      transform: Matrix4.translationValues(0, -30, 0),
-      child: Wrap(
-        spacing: 16,
-        runSpacing: 16,
-        alignment: WrapAlignment.center,
-        children: stats.map((stat) => _buildStatCard(stat, isSmallScreen)).toList(),
-      ),
-    );
-  }
+    // Responsive container width
+    final containerWidth = isSmallScreen
+        ? MediaQuery.of(context).size.width * 0.9
+        : isTabletScreen
+            ? MediaQuery.of(context).size.width * 0.85
+            : MediaQuery.of(context).size.width * 0.7;
 
-  Widget _buildStatCard(Map<String, dynamic> stat, bool isSmallScreen) {
+    // Create a modern badge style for the stats
     return Container(
-      width: isSmallScreen ? double.infinity : 300,
-      padding: const EdgeInsets.all(24),
+      width: containerWidth,
+      padding: EdgeInsets.symmetric(
+        vertical: isSmallScreen ? 14 : 16,
+        horizontal: isSmallScreen ? 18 : 20,
+      ),
       decoration: BoxDecoration(
-        color: AppColors.pearl,
+        color: Colors.white.withOpacity(0.08),
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.15),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.darkColor.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppColors.sapphire.withOpacity(0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              stat['icon'] as IconData,
-              color: AppColors.sapphire,
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  stat['title'] as String,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.darkTextColor,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  stat['value'] as String,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: AppColors.sapphire,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: isSmallScreen
+            // For mobile: Column layout with each item in a row
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: stats.map((stat) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          stat['icon'] as IconData,
+                          color: AppColors.accentColor,
+                          // Increased icon size for mobile
+                          size: 24,
+                        ),
+                        const SizedBox(width: 14),
+                        Text(
+                          stat['label'] as String,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            // Increased font size for mobile
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              )
+            : Wrap(
+                alignment: WrapAlignment.spaceEvenly,
+                spacing: 16, 
+                runSpacing: 12, 
+                children: stats.map((stat) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          stat['icon'] as IconData,
+                          color: AppColors.accentColor,
+                          size: isTabletScreen ? 20 : 22,
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          stat['label'] as String,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: isTabletScreen ? 15 : 16,
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
       ),
     );
   }
-}
-
-class GridPatternPainter extends CustomPainter {
-  final Color color;
-
-  GridPatternPainter({required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 1.0
-      ..style = PaintingStyle.stroke;
-
-    const spacing = 30.0;
-
-    for (var i = 0; i < size.width; i += spacing as int) {
-      canvas.drawLine(
-        Offset(i as double, 0),
-        Offset(i as double, size.height),
-        paint,
-      );
-    }
-
-    for (var i = 0; i < size.height; i += spacing as int) {
-      canvas.drawLine(
-        Offset(0, i as double),
-        Offset(size.width, i as double),
-        paint,
-      );
-    }
-  }
-
-  @override
-  bool shouldRepaint(GridPatternPainter oldDelegate) => false;
 }

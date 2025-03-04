@@ -81,8 +81,9 @@ class _HeroSectionState extends State<HeroSection>
     final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
     final padding = ScreenUtils.getResponsivePadding(context);
 
+    // Reduced height for mobile devices (was 400)
     return Container(
-      height: widget.customHeight ?? (isSmallScreen ? 400 : 450),
+      height: widget.customHeight ?? (isSmallScreen ? 350 : 450),
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: AppColors.premiumDarkGradient,
@@ -127,7 +128,8 @@ class _HeroSectionState extends State<HeroSection>
                   children: [
                     if (widget.showAnimatedLogo) ...[
                       _buildAnimatedLogo(isSmallScreen),
-                      const SizedBox(height: 24),
+                      // Reduced spacing for mobile
+                      SizedBox(height: isSmallScreen ? 16 : 24),
                     ],
                     
                     // Animated title
@@ -140,9 +142,10 @@ class _HeroSectionState extends State<HeroSection>
                           child: Text(
                             widget.title,
                             style: TextStyle(
+                              // Enlarged font size for mobile (was 32)
                               fontSize: ScreenUtils.getResponsiveFontSize(
                                 context,
-                                isSmallScreen ? 32 : 40,
+                                isSmallScreen ? 36 : 40,
                               ),
                               fontWeight: FontWeight.bold,
                               color: AppColors.lightTextColor,
@@ -154,22 +157,24 @@ class _HeroSectionState extends State<HeroSection>
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    // Reduced spacing for mobile
+                    SizedBox(height: isSmallScreen ? 12 : 16),
                     
                     // Animated subtitle
                     FadeTransition(
                       opacity: _fadeAnimation,
                       child: Container(
-                        padding: const EdgeInsets.symmetric(
+                        padding: EdgeInsets.symmetric(
                           horizontal: 24,
-                          vertical: 8,
+                          vertical: isSmallScreen ? 6 : 8,
                         ),
                         child: Text(
                           widget.subtitle,
                           style: TextStyle(
+                            // Enlarged font size for mobile (was 14)
                             fontSize: ScreenUtils.getResponsiveFontSize(
                               context,
-                              isSmallScreen ? 14 : 18,
+                              isSmallScreen ? 16 : 18,
                             ),
                             color: AppColors.lightTextColor.withOpacity(0.9),
                             height: 1.5,
@@ -180,7 +185,8 @@ class _HeroSectionState extends State<HeroSection>
                     ),
 
                     if (widget.actions != null && widget.actions!.isNotEmpty) ...[
-                      const SizedBox(height: 24),
+                      // Reduced spacing for mobile
+                      SizedBox(height: isSmallScreen ? 20 : 24),
                       FadeTransition(
                         opacity: _fadeAnimation,
                         child: ScaleTransition(
@@ -196,7 +202,8 @@ class _HeroSectionState extends State<HeroSection>
                     ],
 
                     if (widget.additionalContent != null) ...[
-                      const SizedBox(height: 24),
+                      // Reduced spacing for mobile
+                      SizedBox(height: isSmallScreen ? 20 : 24),
                       FadeTransition(
                         opacity: _fadeAnimation,
                         child: widget.additionalContent!,
@@ -219,7 +226,8 @@ class _HeroSectionState extends State<HeroSection>
         return Transform.rotate(
           angle: _controller.value * 2 * math.pi,
           child: Container(
-            padding: const EdgeInsets.all(20),
+            // Slightly larger padding for mobile
+            padding: EdgeInsets.all(isSmallScreen ? 22 : 20),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: AppColors.metallicGradient,
@@ -238,7 +246,8 @@ class _HeroSectionState extends State<HeroSection>
             ),
             child: Icon(
               Icons.precision_manufacturing,
-              size: isSmallScreen ? 40 : 48,
+              // Enlarged icon size for mobile (was 40)
+              size: isSmallScreen ? 48 : 48,
               color: AppColors.sapphire,
             ),
           ),

@@ -11,12 +11,14 @@ class CTASection extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
+    final isTabletScreen = ResponsiveBreakpoints.isTablet(screenWidth);
     final padding = ScreenUtils.getResponsivePadding(context);
 
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
-        vertical: isSmallScreen ? 60 : 100,
+        // Adjust vertical padding based on screen size
+        vertical: isSmallScreen ? 40 : isTabletScreen ? 70 : 100,
         horizontal: padding,
       ),
       decoration: BoxDecoration(
@@ -51,12 +53,17 @@ class CTASection extends StatelessWidget {
           // Content
           Center(
             child: Container(
-              constraints: const BoxConstraints(maxWidth: 1200),
+              constraints: BoxConstraints(
+                // Adjust max width based on screen size
+                maxWidth: isSmallScreen ? 450 : isTabletScreen ? 700 : 1200,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    constraints: const BoxConstraints(maxWidth: 800),
+                    constraints: BoxConstraints(
+                      maxWidth: isSmallScreen ? 400 : isTabletScreen ? 600 : 800,
+                    ),
                     child: Column(
                       children: [
                         Text(
@@ -64,7 +71,7 @@ class CTASection extends StatelessWidget {
                           style: TextStyle(
                             fontSize: ScreenUtils.getResponsiveFontSize(
                               context,
-                              isSmallScreen ? 32 : 42,
+                              isSmallScreen ? 28 : isTabletScreen ? 36 : 42,
                             ),
                             fontWeight: FontWeight.bold,
                             color: AppColors.darkTextColor,
@@ -73,18 +80,21 @@ class CTASection extends StatelessWidget {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 20),
+                        SizedBox(height: isSmallScreen ? 12 : 20),
                         Text(
                           'Get in touch with us today and let our expert team bring your vision to life with precision and excellence.',
                           style: TextStyle(
-                            fontSize: ScreenUtils.getResponsiveFontSize(context, 18),
+                            fontSize: ScreenUtils.getResponsiveFontSize(
+                              context, 
+                              isSmallScreen ? 16 : 18
+                            ),
                             color: AppColors.darkTextColor.withOpacity(0.8),
                             height: 1.5,
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        const SizedBox(height: 40),
-                        _buildContactOptions(context, isSmallScreen),
+                        SizedBox(height: isSmallScreen ? 24 : isTabletScreen ? 32 : 40),
+                        _buildContactOptions(context, isSmallScreen, isTabletScreen),
                       ],
                     ),
                   ),
@@ -97,34 +107,52 @@ class CTASection extends StatelessWidget {
     );
   }
 
-  Widget _buildContactOptions(BuildContext context, bool isSmallScreen) {
+  Widget _buildContactOptions(BuildContext context, bool isSmallScreen, bool isTabletScreen) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: EdgeInsets.symmetric(
+        vertical: isSmallScreen ? 4 : 8
+      ),
       child: isSmallScreen
           ? Column(
               children: [
-                _buildPrimaryButton(context),
+                _buildPrimaryButton(context, isSmallScreen, isTabletScreen),
                 const SizedBox(height: 16),
-                _buildSecondaryButton(),
+                _buildSecondaryButton(isSmallScreen, isTabletScreen),
               ],
             )
           : Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildPrimaryButton(context),
-                const SizedBox(width: 20),
-                _buildSecondaryButton(),
+                _buildPrimaryButton(context, isSmallScreen, isTabletScreen),
+                SizedBox(width: isTabletScreen ? 16 : 20),
+                _buildSecondaryButton(isSmallScreen, isTabletScreen),
               ],
             ),
     );
   }
 
-  Widget _buildPrimaryButton(BuildContext context) {
+  Widget _buildPrimaryButton(BuildContext context, bool isSmallScreen, bool isTabletScreen) {
+    final width = isSmallScreen
+        ? double.infinity
+        : isTabletScreen
+            ? 220.0
+            : null;
+            
+    final height = isSmallScreen ? 50.0 : isTabletScreen ? 54.0 : 56.0;
+    
+    final btnPadding = isSmallScreen
+        ? const EdgeInsets.symmetric(horizontal: 24, vertical: 14)
+        : isTabletScreen
+            ? const EdgeInsets.symmetric(horizontal: 28, vertical: 15)
+            : const EdgeInsets.symmetric(horizontal: 32, vertical: 16);
+            
+    final fontSize = isSmallScreen ? 15.0 : 16.0;
+    
+    final iconSize = isSmallScreen ? 18.0 : 20.0;
+
     return Container(
-      width: ResponsiveBreakpoints.isMobile(MediaQuery.of(context).size.width)
-          ? double.infinity
-          : null,
-      height: 56,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -143,16 +171,19 @@ class CTASection extends StatelessWidget {
       ),
       child: ElevatedButton.icon(
         onPressed: () => Navigator.pushNamed(context, '/contact'),
-        icon: const Icon(Icons.send, size: 20),
-        label: const Text(
+        icon: Icon(Icons.send, size: iconSize),
+        label: Text(
           'Start Your Project',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.transparent,
           foregroundColor: AppColors.lightTextColor,
           shadowColor: Colors.transparent,
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          padding: btnPadding,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -161,32 +192,53 @@ class CTASection extends StatelessWidget {
     );
   }
 
-  Widget _buildSecondaryButton() {
+  Widget _buildSecondaryButton(bool isSmallScreen, bool isTabletScreen) {
+    final width = isSmallScreen
+        ? double.infinity
+        : isTabletScreen
+            ? 220.0
+            : null;
+            
+    final height = isSmallScreen ? 50.0 : isTabletScreen ? 54.0 : 56.0;
+    
+    final btnPadding = isSmallScreen
+        ? const EdgeInsets.symmetric(horizontal: 24, vertical: 14)
+        : isTabletScreen
+            ? const EdgeInsets.symmetric(horizontal: 28, vertical: 15)
+            : const EdgeInsets.symmetric(horizontal: 32, vertical: 16);
+            
+    final fontSize = isSmallScreen ? 15.0 : 16.0;
+    
+    final iconSize = isSmallScreen ? 18.0 : 20.0;
+    
+    final borderWidth = isSmallScreen ? 1.5 : 2.0;
+
     return Container(
-      height: 56,
+      width: width,
+      height: height,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: AppColors.sapphire,
-          width: 2,
+          width: borderWidth,
         ),
       ),
       child: OutlinedButton.icon(
         onPressed: () {
           // Launch phone call
         },
-        icon: const Icon(Icons.phone, size: 20, color: AppColors.sapphire),
-        label: const Text(
+        icon: Icon(Icons.phone, size: iconSize, color: AppColors.sapphire),
+        label: Text(
           'Call Us Now',
           style: TextStyle(
-            fontSize: 16,
+            fontSize: fontSize,
             fontWeight: FontWeight.bold,
             color: AppColors.sapphire,
           ),
         ),
         style: OutlinedButton.styleFrom(
           backgroundColor: Colors.transparent,
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          padding: btnPadding,
           side: BorderSide.none,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),

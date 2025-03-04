@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../utils/colors.dart';
-import '../../../utils/screen_utils.dart';
-import '../../../config/responsive_breakpoints.dart';
+import '../../utils/colors.dart';
+import '../../utils/screen_utils.dart';
+import '../../config/responsive_breakpoints.dart';
 
 class ProcessSection extends StatelessWidget {
   const ProcessSection({super.key});
@@ -25,16 +25,8 @@ class ProcessSection extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 1200),
           child: Column(
             children: [
-              Text(
-                'Our Process',
-                style: TextStyle(
-                  fontSize: ScreenUtils.getResponsiveFontSize(context, 36),
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.darkTextColor,
-                  letterSpacing: 0.5,
-                ),
-                textAlign: TextAlign.center,
-              ),
+              // Enhanced header section with consistent styling
+              _buildHeader(context),
               const SizedBox(height: 60),
               isSmallScreen
                   ? Column(
@@ -61,6 +53,73 @@ class ProcessSection extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+  
+  // New enhanced header matching other sections
+  Widget _buildHeader(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
+    
+    return Column(
+      children: [
+        // Title text
+        Text(
+          'Our Process',
+          style: TextStyle(
+            fontSize: ScreenUtils.getResponsiveFontSize(context, isSmallScreen ? 32 : 36),
+            fontWeight: FontWeight.bold,
+            color: AppColors.darkTextColor,
+            letterSpacing: 0.5,
+            height: 1.2,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        
+        // Decorative divider for title
+        Container(
+          margin: const EdgeInsets.only(top: 12, bottom: 24),
+          width: isSmallScreen ? 240 : 300,
+          height: 2.5,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.sapphire.withOpacity(0.0),
+                AppColors.sapphire,
+                AppColors.sapphire.withOpacity(0.0),
+              ],
+              stops: const [0.0, 0.5, 1.0],
+            ),
+            borderRadius: BorderRadius.circular(1.25),
+          ),
+        ),
+        
+        // Subtitle with text-only color transition effect
+        Container(
+          constraints: const BoxConstraints(maxWidth: 600),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: ShaderMask(
+            shaderCallback: (bounds) => LinearGradient(
+              colors: [
+                AppColors.darkTextColor.withOpacity(0.7),
+                AppColors.sapphire,
+                AppColors.darkTextColor.withOpacity(0.7),
+              ],
+              stops: const [0.1, 0.5, 0.9],
+            ).createShader(bounds),
+            child: Text(
+              'Our streamlined approach to delivering exceptional results',
+              style: TextStyle(
+                fontSize: ScreenUtils.getResponsiveFontSize(context, 18),
+                fontWeight: FontWeight.w500,
+                color: Colors.white, // The ShaderMask will override this
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
