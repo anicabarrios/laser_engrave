@@ -26,6 +26,18 @@ class GalleryDataProvider {
       'category': 'Artistic',
       'tags': ['Modern Art', 'Creative', 'Laser Engraving'],
     },
+     {
+        'imageUrl': 'assets/images/glass.webp',
+        'title': 'Glass Crystal Engraving',
+        'category': 'Crystal',
+        'tags': ['Premium Gift', 'Corporate Award', '3D Etching'],
+      },
+    {
+        'imageUrl': 'assets/images/personalized.webp',
+        'title': 'Personalized Gift Items',
+        'category': 'Gift',
+        'tags': ['Custom Message', 'Keepsake', 'Anniversary'],
+      },
     ];
   }
 
