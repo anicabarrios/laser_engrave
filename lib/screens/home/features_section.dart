@@ -24,7 +24,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
         'Surface texturing',
         'Anti-counterfeiting marks'
       ],
-      imageUrl: 'assets/images/metal_marking.jpg',
+     imageUrl: 'assets/images/industrial2.webp',
     ),
     const Feature(
       title: 'Custom Wood Engraving',
@@ -37,7 +37,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
         'Text and calligraphy',
         'Deep relief engraving'
       ],
-      imageUrl: 'assets/images/wood_engraving.jpg',
+        imageUrl: 'assets/images/wood.webp',
     ),
     const Feature(
       title: 'Jewelry Customization',
@@ -50,7 +50,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
         'Precious metal marking',
         'Micro-engraving'
       ],
-      imageUrl: 'assets/images/jewelry.jpg',
+      imageUrl: 'assets/images/jewlery5.webp',
     ),
     const Feature(
       title: 'Corporate Solutions',
@@ -63,7 +63,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
         'Equipment labeling',
         'Safety marking'
       ],
-      imageUrl: 'assets/images/corporate.jpg',
+        imageUrl: 'assets/images/wood3.webp',
     ),
     const Feature(
       title: 'Promotional Products',
@@ -76,7 +76,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
         'Event merchandise',
         'Brand collateral'
       ],
-      imageUrl: 'assets/images/promotional.jpg',
+      imageUrl: 'assets/images/industrial4.webp',
     ),
     const Feature(
       title: 'Artistic Services',
@@ -89,7 +89,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
         'Mixed media projects',
         'Installation art'
       ],
-      imageUrl: 'assets/images/artistic.jpg',
+      imageUrl: 'assets/images/engraved.webp',
     ),
   ];
 
@@ -132,7 +132,6 @@ class _FeaturesSectionState extends State<FeaturesSection> {
   
   return Column(
     children: [
-      // Title text
       Text(
         'Our Services & Capabilities',
         style: TextStyle(
@@ -145,7 +144,6 @@ class _FeaturesSectionState extends State<FeaturesSection> {
         textAlign: TextAlign.center,
       ),
       
-      // Decorative divider for title
       Container(
         margin: const EdgeInsets.only(top: 12, bottom: 24),
         width: isSmallScreen ? 240 : 300,
@@ -163,7 +161,6 @@ class _FeaturesSectionState extends State<FeaturesSection> {
         ),
       ),
       
-      // Subtitle with text-only color transition effect
       Container(
         constraints: const BoxConstraints(maxWidth: 600),
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -181,7 +178,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
             style: TextStyle(
               fontSize: ScreenUtils.getResponsiveFontSize(context, 18),
               fontWeight: FontWeight.w500,
-              color: Colors.white, // The ShaderMask will override this
+              color: Colors.white, 
               height: 1.5,
             ),
             textAlign: TextAlign.center,
@@ -229,28 +226,37 @@ class _FeaturesSectionState extends State<FeaturesSection> {
   }
 
   Widget _buildDesktopLayout(BuildContext context) {
-    return IntrinsicHeight(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            flex: 2,
-            child: Column(
-              children: List.generate(
-                features.length,
-                (index) => _buildFeatureTab(index),
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1400),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 320, 
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Container(
+                    height: 540,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center, 
+                      children: List.generate(
+                        features.length,
+                        (index) => _buildFeatureTab(index),
+                      ),
+                    ),
+                  );
+                }
               ),
             ),
-          ),
-          const SizedBox(width: 5),
-          Expanded(
-            flex: 3,
-            child: Transform.translate(
-              offset: const Offset(-25, 0),
-              child: _buildFeatureContent(context),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: _buildFeatureContent(context),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -342,7 +348,6 @@ class _FeaturesSectionState extends State<FeaturesSection> {
     final titleSize = isMobile ? 20.0 : isTablet ? 22.0 : 24.0;
     final descriptionSize = isMobile ? 14.0 : 16.0;
     final iconSize = isMobile ? 24.0 : isTablet ? 26.0 : 28.0;
-    final imageHeight = isMobile ? 180.0 : isTablet ? 220.0 : 240.0;
     
     return ResponsiveFeatureCard(
       child: Container(
@@ -355,7 +360,6 @@ class _FeaturesSectionState extends State<FeaturesSection> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title & Description
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -400,20 +404,21 @@ class _FeaturesSectionState extends State<FeaturesSection> {
               
               SizedBox(height: isMobile ? 24 : 32),
               
-              // Image
               ClipRRect(
                 borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  feature.imageUrl,
+                child: SizedBox(
+                  height: isMobile ? 200 : isTablet ? 260 : 300,
                   width: double.infinity,
-                  height: imageHeight,
-                  fit: BoxFit.cover,
+                  child: Image.asset(
+                    feature.imageUrl,
+                    fit: BoxFit.cover, 
+                    alignment: Alignment.center, 
+                  ),
                 ),
               ),
               
               SizedBox(height: isMobile ? 24 : 32),
-              
-              // Capabilities
+
               Text(
                 'Key Capabilities:',
                 style: TextStyle(
@@ -424,13 +429,11 @@ class _FeaturesSectionState extends State<FeaturesSection> {
               ),
               
               const SizedBox(height: 16),
-              
-              // Capability chips
+
               _buildCapabilitiesWrap(feature.capabilities, screenWidth),
               
               const SizedBox(height: 32),
               
-              // CTA Button
               SizedBox(
                 width: isMobile ? double.infinity : null,
                 child: ElevatedButton(
@@ -440,7 +443,7 @@ class _FeaturesSectionState extends State<FeaturesSection> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.sapphire,
                     foregroundColor: AppColors.lightTextColor,
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 32,
                       vertical: 16,
                     ),
@@ -518,8 +521,7 @@ class _ResponsiveFeatureCardState extends State<ResponsiveFeatureCard> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
-    
-    // Apply hover effects for non-mobile screens only
+
     return MouseRegion(
       onEnter: isSmallScreen ? null : (_) => setState(() => _isHovered = true),
       onExit: isSmallScreen ? null : (_) => setState(() => _isHovered = false),

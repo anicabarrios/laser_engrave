@@ -25,7 +25,6 @@ class CustomDrawer extends StatelessWidget {
         ),
         child: Stack(
           children: [
-            // Metallic shine effect overlay
             Positioned.fill(
               child: DecoratedBox(
                 decoration: BoxDecoration(

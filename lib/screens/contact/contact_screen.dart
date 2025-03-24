@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:laser_engrave/widgets/grid_pattern_painter.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:laser_engrave/widgets/footer.dart';
 import '../../utils/colors.dart';
@@ -10,6 +11,7 @@ import '../../screens/home/floating_contact_button.dart';
 import '../../widgets/hero.dart';
 import 'contact_form.dart';
 import 'contact_info.dart';
+import '../../services/email_service.dart';
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({super.key});
@@ -63,6 +65,9 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
     );
     _animationController.forward();
 
+    // Initialize EmailService
+    EmailService.init();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         _visibleSections['hero'] = true;
@@ -70,7 +75,7 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
     });
   }
 
-  @override
+   @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
@@ -80,7 +85,7 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
     super.dispose();
   }
 
-  void _onSectionVisibilityChanged(String sectionKey, bool isVisible) {
+   void _onSectionVisibilityChanged(String sectionKey, bool isVisible) {
     if (isVisible && !(_visibleSections[sectionKey] ?? false)) {
       setState(() {
         _visibleSections[sectionKey] = true;
@@ -94,7 +99,23 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
       HapticFeedback.mediumImpact();
 
       try {
-        await Future.delayed(const Duration(seconds: 2));
+        // Format preferred date if available
+        String? formattedDate;
+        if (_preferredDate != null) {
+          formattedDate = '${_preferredDate!.day}/${_preferredDate!.month}/${_preferredDate!.year}';
+        }
+
+        // Send the email
+        await EmailService.sendEmail(
+          name: _nameController.text,
+          email: _emailController.text,
+          phone: _phoneController.text.isEmpty ? null : _phoneController.text,
+          service: _selectedService,
+          budget: _selectedBudget,
+          preferredDate: formattedDate,
+          message: _messageController.text,
+        );
+
         if (mounted) {
           setState(() => _isSubmitting = false);
           _showSuccessDialog();
@@ -104,6 +125,7 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
         if (mounted) {
           setState(() => _isSubmitting = false);
           _showErrorSnackbar('Failed to send message. Please try again.');
+          print('Email error: $e'); // For debugging
         }
       }
     }
@@ -121,84 +143,224 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
     });
   }
 
-  void _showSuccessDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Container(
-          padding: const EdgeInsets.all(24),
+ void _showSuccessDialog() {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      final screenWidth = MediaQuery.of(context).size.width;
+      final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
+      
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: EdgeInsets.symmetric(
+          horizontal: isSmallScreen ? 16 : 40,
+          vertical: isSmallScreen ? 24 : 40,
+        ),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOutQuint,
+          padding: EdgeInsets.all(isSmallScreen ? 24 : 32),
+          width: isSmallScreen ? double.infinity : 420,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
+            // Brighter gradient with more white/pearl tones
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
+                Colors.white,
                 AppColors.pearl,
-                AppColors.pearl.withOpacity(0.95),
+                AppColors.platinum.withOpacity(0.7),
               ],
+              stops: const [0.0, 0.6, 1.0],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.sapphire.withOpacity(0.15),
+                blurRadius: 20,
+                spreadRadius: 5,
+              ),
+              BoxShadow(
+                color: Colors.white.withOpacity(0.5),
+                blurRadius: 15,
+                spreadRadius: -2,
+                offset: const Offset(-2, -2),
+              ),
+            ],
+            border: Border.all(
+              color: Colors.white.withOpacity(0.8),
+              width: 1.5,
             ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+          child: Stack(
             children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: AppColors.sapphire.withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.check_circle_outline,
-                  size: 48,
-                  color: AppColors.sapphire,
+              // Grid pattern overlay with reduced opacity
+              Positioned.fill(
+                child: CustomPaint(
+                  painter: GridPatternPainter(
+                    color: AppColors.sapphire.withOpacity(0.04),
+                  ),
                 ),
               ),
-              const SizedBox(height: 24),
-              const Text(
-                'Message Sent Successfully!',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.darkTextColor,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Thank you for reaching out. We will get back to you within 24 hours.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppColors.darkTextColor.withOpacity(0.7),
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.sapphire,
-                    foregroundColor: AppColors.lightTextColor,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+              
+              // Content
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Success icon with animation and brighter colors
+                  TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 600),
+                    curve: Curves.elasticOut,
+                    tween: Tween<double>(begin: 0.5, end: 1.0),
+                    builder: (context, value, child) {
+                      return Transform.scale(
+                        scale: value,
+                        child: Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                AppColors.sapphire.withOpacity(0.8),
+                                AppColors.accentColor,
+                              ],
+                            ),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.sapphire.withOpacity(0.3),
+                                blurRadius: 12,
+                                spreadRadius: 2,
+                              ),
+                              BoxShadow(
+                                color: Colors.white.withOpacity(0.9),
+                                blurRadius: 8,
+                                spreadRadius: -2,
+                                offset: const Offset(-2, -2),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.check_circle_outline,
+                            size: 48,
+                            color: Colors.white,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  
+                  const SizedBox(height: 24),
+                  
+                  // Title with refined typography
+                  TweenAnimationBuilder<double>(
+                    duration: const Duration(milliseconds: 800),
+                    curve: Curves.easeOutCubic,
+                    tween: Tween<double>(begin: 0.0, end: 1.0),
+                    builder: (context, value, child) {
+                      return Opacity(
+                        opacity: value,
+                        child: child,
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 8,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.sapphire.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Text(
+                        'Message Sent Successfully',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.darkTextColor,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
                     ),
                   ),
-                  child: const Text(
-                    'Great!',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  
+                  const SizedBox(height: 20),
+                  
+                  // Message with improved styling
+                  AnimatedOpacity(
+                    duration: const Duration(milliseconds: 800),
+                    opacity: 1.0,
+                    curve: Curves.easeInOut,
+                    child: Text(
+                      'Thank you for reaching out. Our team will review your inquiry and contact you within 24 hours to discuss your project.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.darkTextColor.withOpacity(0.8),
+                        height: 1.6,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
                   ),
-                ),
+                  
+                  const SizedBox(height: 30),
+                  
+                  // Premium "Close" button with hover effect and brighter accent
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: Container(
+                      width: double.infinity,
+                      height: 56,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppColors.sapphire,
+                            AppColors.accentColor,
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.sapphire.withOpacity(0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: AppColors.lightTextColor,
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          'Close',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
+      );
+    },
+  );
+}
 
   void _showErrorSnackbar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(

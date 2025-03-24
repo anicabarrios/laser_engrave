@@ -81,7 +81,6 @@ class _HeroSectionState extends State<HeroSection>
     final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
     final padding = ScreenUtils.getResponsivePadding(context);
 
-    // Reduced height for mobile devices (was 400)
     return Container(
       height: widget.customHeight ?? (isSmallScreen ? 350 : 450),
       width: double.infinity,
@@ -90,7 +89,6 @@ class _HeroSectionState extends State<HeroSection>
       ),
       child: Stack(
         children: [
-          // Grid pattern overlay
           Positioned.fill(
             child: CustomPaint(
               painter: GridPatternPainter(
@@ -99,7 +97,6 @@ class _HeroSectionState extends State<HeroSection>
             ),
           ),
           
-          // Metallic shine effect overlay
           Positioned.fill(
             child: DecoratedBox(
               decoration: BoxDecoration(
@@ -117,7 +114,6 @@ class _HeroSectionState extends State<HeroSection>
             ),
           ),
           
-          // Main content
           Padding(
             padding: EdgeInsets.symmetric(horizontal: padding),
             child: Center(
@@ -128,11 +124,9 @@ class _HeroSectionState extends State<HeroSection>
                   children: [
                     if (widget.showAnimatedLogo) ...[
                       _buildAnimatedLogo(isSmallScreen),
-                      // Reduced spacing for mobile
                       SizedBox(height: isSmallScreen ? 16 : 24),
                     ],
-                    
-                    // Animated title
+
                     FadeTransition(
                       opacity: _fadeAnimation,
                       child: SlideTransition(
@@ -142,7 +136,6 @@ class _HeroSectionState extends State<HeroSection>
                           child: Text(
                             widget.title,
                             style: TextStyle(
-                              // Enlarged font size for mobile (was 32)
                               fontSize: ScreenUtils.getResponsiveFontSize(
                                 context,
                                 isSmallScreen ? 36 : 40,
@@ -157,10 +150,8 @@ class _HeroSectionState extends State<HeroSection>
                         ),
                       ),
                     ),
-                    // Reduced spacing for mobile
                     SizedBox(height: isSmallScreen ? 12 : 16),
-                    
-                    // Animated subtitle
+                  
                     FadeTransition(
                       opacity: _fadeAnimation,
                       child: Container(
@@ -171,7 +162,6 @@ class _HeroSectionState extends State<HeroSection>
                         child: Text(
                           widget.subtitle,
                           style: TextStyle(
-                            // Enlarged font size for mobile (was 14)
                             fontSize: ScreenUtils.getResponsiveFontSize(
                               context,
                               isSmallScreen ? 16 : 18,
@@ -185,7 +175,6 @@ class _HeroSectionState extends State<HeroSection>
                     ),
 
                     if (widget.actions != null && widget.actions!.isNotEmpty) ...[
-                      // Reduced spacing for mobile
                       SizedBox(height: isSmallScreen ? 20 : 24),
                       FadeTransition(
                         opacity: _fadeAnimation,
@@ -202,7 +191,6 @@ class _HeroSectionState extends State<HeroSection>
                     ],
 
                     if (widget.additionalContent != null) ...[
-                      // Reduced spacing for mobile
                       SizedBox(height: isSmallScreen ? 20 : 24),
                       FadeTransition(
                         opacity: _fadeAnimation,
@@ -226,7 +214,6 @@ class _HeroSectionState extends State<HeroSection>
         return Transform.rotate(
           angle: _controller.value * 2 * math.pi,
           child: Container(
-            // Slightly larger padding for mobile
             padding: EdgeInsets.all(isSmallScreen ? 22 : 20),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
@@ -246,7 +233,6 @@ class _HeroSectionState extends State<HeroSection>
             ),
             child: Icon(
               Icons.precision_manufacturing,
-              // Enlarged icon size for mobile (was 40)
               size: isSmallScreen ? 48 : 48,
               color: AppColors.sapphire,
             ),

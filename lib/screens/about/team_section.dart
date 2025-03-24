@@ -46,7 +46,6 @@ class TeamSection extends StatelessWidget {
               constraints: const BoxConstraints(maxWidth: 1200),
               child: Column(
                 children: [
-                  // Enhanced header section with consistent styling
                   _buildHeader(context),
                   const SizedBox(height: 60),
                   GridView.builder(
@@ -56,7 +55,6 @@ class TeamSection extends StatelessWidget {
                       crossAxisCount: isSmallScreen ? 1 : 3,
                       crossAxisSpacing: 30,
                       mainAxisSpacing: 30,
-                      // Adjust the aspect ratio for mobile to allow more vertical space
                       childAspectRatio: isSmallScreen ? 0.75 : 0.8,
                     ),
                     itemCount: _teamMembers.length,
@@ -72,7 +70,6 @@ class TeamSection extends StatelessWidget {
     );
   }
 
-  // New enhanced header matching other sections
   Widget _buildHeader(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
@@ -193,114 +190,121 @@ class _TeamMemberCardState extends State<_TeamMemberCard> {
         ),
         transform: Matrix4.identity()
           ..scale(isHovered ? 1.02 : 1.0),
-        child: Column(
-          children: [
-            Expanded(
-              flex: 3,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(15),
-                  ),
-                  image: DecorationImage(
-                    image: AssetImage(widget.member['image']!),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(isHovered ? 0.1 : 0.2),
-                      BlendMode.darken,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Column(
+            children: [
+              Expanded(
+                flex: 3,
+                child: _buildTeamMemberImage(isHovered),
+              ),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  color: Colors.white,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AnimatedDefaultTextStyle(
+                          duration: const Duration(milliseconds: 200),
+                          style: TextStyle(
+                            fontSize: ScreenUtils.getResponsiveFontSize(
+                              context,
+                              isHovered ? 22 : (isSmallScreen ? 18 : 20),
+                            ),
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.darkTextColor,
+                            letterSpacing: 0.3,
+                          ),
+                          child: Text(
+                            widget.member['name']!,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.sapphire.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: AppColors.sapphire.withOpacity(0.2),
+                            ),
+                          ),
+                          child: Text(
+                            widget.member['role']!,
+                            style: TextStyle(
+                              fontSize: ScreenUtils.getResponsiveFontSize(context, 14),
+                              color: AppColors.sapphire,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          widget.member['description']!,
+                          style: TextStyle(
+                            fontSize: ScreenUtils.getResponsiveFontSize(context, 14),
+                            color: AppColors.darkTextColor.withOpacity(0.7),
+                            height: 1.4,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                child: Stack(
-                  children: [
-                    if (isHovered)
-                      Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              AppColors.sapphire.withOpacity(0.2),
-                              AppColors.pearl.withOpacity(0.1),
-                            ],
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
               ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(15),
-                  ),
-                ),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AnimatedDefaultTextStyle(
-                        duration: const Duration(milliseconds: 200),
-                        style: TextStyle(
-                          fontSize: ScreenUtils.getResponsiveFontSize(
-                            context,
-                            isHovered ? 22 : (isSmallScreen ? 18 : 20),
-                          ),
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.darkTextColor,
-                          letterSpacing: 0.3,
-                        ),
-                        child: Text(
-                          widget.member['name']!,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.2),
-                          ),
-                        ),
-                        child: Text(
-                          widget.member['role']!,
-                          style: TextStyle(
-                            fontSize: ScreenUtils.getResponsiveFontSize(context, 14),
-                            color: AppColors.sapphire,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        widget.member['description']!,
-                        style: TextStyle(
-                          fontSize: ScreenUtils.getResponsiveFontSize(context, 14),
-                          color: AppColors.darkTextColor.withOpacity(0.7),
-                          height: 1.4,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTeamMemberImage(bool isHovered) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Base image - doesn't animate
+        Image.asset(
+          widget.member['image']!,
+          fit: BoxFit.cover,
+        ),
+        
+        // Overlay that animates
+        AnimatedOpacity(
+          duration: const Duration(milliseconds: 200),
+          opacity: isHovered ? 1.0 : 0.0,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.sapphire.withOpacity(0.2),
+                  AppColors.pearl.withOpacity(0.1),
+                ],
+              ),
+            ),
+          ),
+        ),
+        
+        // Dark overlay that fades out on hover
+        AnimatedOpacity(
+          duration: const Duration(milliseconds: 200),
+          opacity: isHovered ? 0.0 : 0.2,
+          child: Container(
+            color: Colors.black,
+          ),
+        ),
+      ],
     );
   }
 }
@@ -310,18 +314,18 @@ final List<Map<String, String>> _teamMembers = [
     'name': 'John Smith',
     'role': 'Master Engraver',
     'description': '15 years of precision engineering experience',
-    'image': 'assets/images/team1.jpg',
+    'image': 'assets/images/boss.webp',
   },
   {
     'name': 'Sarah Johnson',
     'role': 'Design Director',
     'description': 'Award-winning industrial designer',
-    'image': 'assets/images/team2.jpg',
+    'image': 'assets/images/bossl.webp',
   },
   {
     'name': 'Michael Chen',
     'role': 'Technical Lead',
     'description': 'Specialized in advanced laser systems',
-    'image': 'assets/images/team3.jpg',
+    'image': 'assets/images/worker.webp',
   },
 ];

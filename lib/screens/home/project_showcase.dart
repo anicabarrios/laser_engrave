@@ -9,19 +9,19 @@ class ProjectSection extends StatelessWidget {
 
   final List<Map<String, dynamic>> projects = const [
     {
-      'image': 'assets/images/project1.jpg',
+      'image': 'assets/images/industrial3.webp',
       'title': 'Industrial Component Marking',
       'category': 'Manufacturing',
       'description': 'High-precision serial number and QR code marking for industrial components.',
     },
     {
-      'image': 'assets/images/project2.jpg',
+      'image': 'assets/images/custom.webp',
       'title': 'Custom Wood Engravings',
       'category': 'Custom Design',
       'description': 'Intricate designs on premium wooden surfaces for artistic and decorative purposes.',
     },
     {
-      'image': 'assets/images/project3.jpg',
+      'image': 'assets/images/jewlery2.webp',
       'title': 'Jewelry Personalization',
       'category': 'Luxury',
       'description': 'Delicate engraving work on precious metals and jewelry pieces.',
@@ -63,12 +63,9 @@ class ProjectSection extends StatelessWidget {
           ),
           Column(
             children: [
-              // Enhanced Section Header (matching FeaturesSection style)
               _buildHeader(context),
               
               const SizedBox(height: 60),
-              
-              // Responsive Project Grid
               LayoutBuilder(
                 builder: (context, constraints) {
                   if (isSmallScreen) {
@@ -78,7 +75,6 @@ class ProjectSection extends StatelessWidget {
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 30),
                           child: FractionallySizedBox(
-                            // Making card 90% of available width on mobile
                             widthFactor: 0.9,
                             child: _buildProjectCard(context, project),
                           ),
@@ -86,10 +82,8 @@ class ProjectSection extends StatelessWidget {
                       }).toList(),
                     );
                   } else if (isTabletScreen) {
-                    // Tablet layout (2 columns)
                     return Center(
                       child: SizedBox(
-                        // Constrain the entire grid width to make cards smaller
                         width: constraints.maxWidth * 0.9,
                         child: Wrap(
                           spacing: 30,

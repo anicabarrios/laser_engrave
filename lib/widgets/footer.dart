@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../utils/colors.dart';
-import '../../utils/screen_utils.dart';
-import '../../config/responsive_breakpoints.dart';
-import '../../config/app_config.dart';
+import '../utils/colors.dart';
+import '../utils/screen_utils.dart';
+import '../config/responsive_breakpoints.dart';
+import '../config/app_config.dart';
 
 class Footer extends StatelessWidget {
   const Footer({super.key});
@@ -24,7 +24,7 @@ class Footer extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(
               horizontal: padding,
-              vertical: isSmallScreen ? 40 : 60,
+              vertical: isSmallScreen ? 40 : isTabletScreen ? 50 : 60,
             ),
             child: Center(
               child: ConstrainedBox(
@@ -73,15 +73,39 @@ class Footer extends StatelessWidget {
   Widget _buildTabletContent(BuildContext context) {
     return Column(
       children: [
-        _buildCompanyInfo(false),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: _buildCompanyInfo(true),
+        ),
         const SizedBox(height: 40),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: _buildQuickLinks(context)),
-            Expanded(child: _buildServices(context)),
-            Expanded(child: _buildContact()),
-          ],
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: _buildQuickLinks(context),
+                ),
+              ),
+              Expanded(
+                flex: 4,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: _buildServices(context),
+                ),
+              ),
+              Expanded(
+                flex: 5,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: _buildContact(),
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -114,9 +138,9 @@ class Footer extends StatelessWidget {
     );
   }
 
-  Widget _buildCompanyInfo(bool isMobile) {
+  Widget _buildCompanyInfo(bool isCentered) {
     return Column(
-      crossAxisAlignment: isMobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment: isCentered ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
         Container(
           padding: const EdgeInsets.all(12),
@@ -129,16 +153,19 @@ class Footer extends StatelessWidget {
             children: [
               Icon(
                 Icons.precision_manufacturing,
-                size: 32,
+                size: 28, 
                 color: AppColors.sapphire,
               ),
-              SizedBox(width: 12),
-              Text(
-                AppConfig.appName,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+              SizedBox(width: 8), 
+              Flexible(
+                child: Text(
+                  AppConfig.appName,
+                  style: TextStyle(
+                    fontSize: 20, 
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],
@@ -152,11 +179,11 @@ class Footer extends StatelessWidget {
             height: 1.6,
             fontSize: 16,
           ),
-          textAlign: isMobile ? TextAlign.center : TextAlign.left,
+          textAlign: isCentered ? TextAlign.center : TextAlign.left,
         ),
         const SizedBox(height: 24),
         Row(
-          mainAxisAlignment: isMobile ? MainAxisAlignment.center : MainAxisAlignment.start,
+          mainAxisAlignment: isCentered ? MainAxisAlignment.center : MainAxisAlignment.start,
           children: [
             _buildSocialIcon(Icons.facebook, 'Facebook'),
             const SizedBox(width: 16),
@@ -189,7 +216,6 @@ class Footer extends StatelessWidget {
       children: [
         _buildColumnHeader('Our Services'),
         const SizedBox(height: 20),
-        // Map services to specific gallery categories
         _buildServiceGalleryLink(context, 'Custom Engraving', 'Wood Engraving'),
         _buildServiceGalleryLink(context, 'Industrial Marking', 'Metal'),
         _buildServiceGalleryLink(context, 'Corporate Solutions', 'Corporate'),
@@ -220,15 +246,15 @@ class Footer extends StatelessWidget {
         Text(
           text,
           style: const TextStyle(
-            fontSize: 20,
+            fontSize: 18, 
             fontWeight: FontWeight.bold,
             color: Colors.white,
-            letterSpacing: 0.5,
+            letterSpacing: 0.3,
           ),
         ),
         const SizedBox(height: 4),
         Container(
-          width: 40,
+          width: 36,
           height: 2,
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -252,19 +278,23 @@ class Footer extends StatelessWidget {
         },
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Icon(
               Icons.arrow_forward,
-              size: 16,
+              size: 14, 
               color: AppColors.sapphire,
             ),
-            const SizedBox(width: 8),
-            Text(
-              text,
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
-                fontSize: 15,
-                letterSpacing: 0.3,
+            const SizedBox(width: 6), 
+            Flexible(
+              child: Text(
+                text,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.8),
+                  fontSize: 14, 
+                  letterSpacing: 0.2,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
@@ -278,7 +308,6 @@ class Footer extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 16),
       child: InkWell(
         onTap: () {
-          // Navigate to gallery with the specific category pre-selected
           Navigator.pushNamed(
             context, 
             '/gallery',
@@ -287,19 +316,23 @@ class Footer extends StatelessWidget {
         },
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(
+            Icon(
               Icons.arrow_forward,
-              size: 16,
+              size: 14, 
               color: AppColors.sapphire,
             ),
-            const SizedBox(width: 8),
-            Text(
-              serviceName,
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.8),
-                fontSize: 15,
-                letterSpacing: 0.3,
+            const SizedBox(width: 6), 
+            Flexible(
+              child: Text(
+                serviceName,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.8),
+                  fontSize: 14,
+                  letterSpacing: 0.2,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
@@ -313,27 +346,28 @@ class Footer extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(6), 
           decoration: BoxDecoration(
             color: AppColors.sapphire.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(6),
           ),
           child: Icon(
             icon,
-            size: 18,
+            size: 16, 
             color: AppColors.sapphire,
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 8), 
         Expanded(
           child: Text(
             text,
             style: TextStyle(
               color: Colors.white.withOpacity(0.8),
-              fontSize: 15,
-              height: 1.5,
-              letterSpacing: 0.3,
+              fontSize: 14, 
+              height: 1.4,
+              letterSpacing: 0.2,
             ),
+            overflow: TextOverflow.visible, 
           ),
         ),
       ],
@@ -342,17 +376,18 @@ class Footer extends StatelessWidget {
 
   Widget _buildSocialIcon(IconData icon, String platform) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.all(10), 
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: AppColors.sapphire.withOpacity(0.1),
         border: Border.all(
           color: AppColors.sapphire.withOpacity(0.2),
+          width: 1, 
         ),
       ),
       child: Icon(
         icon,
-        size: 20,
+        size: 18, 
         color: AppColors.sapphire,
       ),
     );
@@ -379,75 +414,15 @@ class Footer extends StatelessWidget {
 
     return SizedBox(
       width: double.infinity,
-      child: isSmallScreen
-          ? Column(
-              children: [
-                Text(
-                  '© $currentYear ${AppConfig.appName}. All rights reserved.',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
-                    fontSize: 14,
-                    letterSpacing: 0.3,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildBottomLink(context, 'Privacy Policy', '/privacy'),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        '•',
-                        style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                      ),
-                    ),
-                    _buildBottomLink(context, 'Terms of Service', '/terms'),
-                  ],
-                ),
-              ],
-            )
-          : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '© $currentYear ${AppConfig.appName}. All rights reserved.',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
-                    fontSize: 14,
-                    letterSpacing: 0.3,
-                  ),
-                ),
-                Row(
-                  children: [
-                    _buildBottomLink(context, 'Privacy Policy', '/privacy'),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: Text(
-                        '•',
-                        style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                      ),
-                    ),
-                    _buildBottomLink(context, 'Terms of Service', '/terms'),
-                  ],
-                ),
-              ],
-            ),
-    );
-  }
-
-  Widget _buildBottomLink(BuildContext context, String text, String route) {
-    return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, route);
-      },
-      child: Text(
-        text,
-        style: TextStyle(
-          color: Colors.white.withOpacity(0.7),
-          fontSize: 14,
-          letterSpacing: 0.3,
+      child: Center(
+        child: Text(
+          '© $currentYear ${AppConfig.appName} All rights reserved.',
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.7),
+            fontSize: 14,
+            letterSpacing: 0.3,
+          ),
+          textAlign: TextAlign.center,
         ),
       ),
     );

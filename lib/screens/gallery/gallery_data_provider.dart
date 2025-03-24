@@ -3,26 +3,26 @@ class GalleryDataProvider {
   static List<Map<String, dynamic>> getGalleryItems() {
     return [
       {
-        'imageUrl': 'assets/images/project1.jpg',
+        'imageUrl': 'assets/images/custom.webp',
         'title': 'Custom Wood Signage',
         'category': 'Wood Engraving',
         'tags': ['Custom Design', 'Premium Wood', 'Business'],
       },
       {
-        'imageUrl': 'assets/images/project2.jpg',
+        'imageUrl': 'assets/images/industrial2.webp',
         'title': 'Industrial Component Marking',
         'category': 'Metal',
         'tags': ['Serial Numbers', 'QR Codes', 'Industrial'],
       },
       {
-        'imageUrl': 'assets/images/project3.jpg',
-        'title': 'Corporate Awards Set',
-        'category': 'Corporate',
+        'imageUrl': 'assets/images/engraved.webp',
+        'title': 'Custom Metal Engraving',
+        'category': 'Metal',
         'tags': ['Crystal', 'Awards', 'Bulk Order'],
       },
         {
-      'imageUrl': 'assets/images/project4.jpg',
-      'title': 'Artistic Laser Sculpture',
+      'imageUrl': 'assets/images/artistic1.webp',
+      'title': 'Artistic Laser Cut',
       'category': 'Artistic',
       'tags': ['Modern Art', 'Creative', 'Laser Engraving'],
     },

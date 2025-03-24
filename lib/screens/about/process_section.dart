@@ -25,7 +25,6 @@ class ProcessSection extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 1200),
           child: Column(
             children: [
-              // Enhanced header section with consistent styling
               _buildHeader(context),
               const SizedBox(height: 60),
               isSmallScreen
@@ -56,14 +55,12 @@ class ProcessSection extends StatelessWidget {
     );
   }
   
-  // New enhanced header matching other sections
   Widget _buildHeader(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
     
     return Column(
       children: [
-        // Title text
         Text(
           'Our Process',
           style: TextStyle(
@@ -76,7 +73,6 @@ class ProcessSection extends StatelessWidget {
           textAlign: TextAlign.center,
         ),
         
-        // Decorative divider for title
         Container(
           margin: const EdgeInsets.only(top: 12, bottom: 24),
           width: isSmallScreen ? 240 : 300,
@@ -93,8 +89,7 @@ class ProcessSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(1.25),
           ),
         ),
-        
-        // Subtitle with text-only color transition effect
+      
         Container(
           constraints: const BoxConstraints(maxWidth: 600),
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -112,7 +107,7 @@ class ProcessSection extends StatelessWidget {
               style: TextStyle(
                 fontSize: ScreenUtils.getResponsiveFontSize(context, 18),
                 fontWeight: FontWeight.w500,
-                color: Colors.white, // The ShaderMask will override this
+                color: Colors.white, 
                 height: 1.5,
               ),
               textAlign: TextAlign.center,
@@ -145,11 +140,10 @@ class _ProcessStepState extends State<_ProcessStep> {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
 
-    // Fixed sizes to prevent layout shifts
-    const double iconContainerSize = 72.0; // Fixed size for the icon container
-    const double iconSize = 32.0; // Fixed icon size
-    const double titleHeight = 28.0; // Fixed height for title text
-    const double descriptionHeight = 50.0; // Fixed height for description text
+    const double iconContainerSize = 72.0; 
+    const double iconSize = 32.0; 
+    const double titleHeight = 28.0; 
+    const double descriptionHeight = 50.0; 
 
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
@@ -158,7 +152,6 @@ class _ProcessStepState extends State<_ProcessStep> {
         padding: EdgeInsets.all(isSmallScreen ? 16 : 24),
         child: Column(
           children: [
-            // Fixed size container to prevent layout shifts
             SizedBox(
               height: iconContainerSize,
               width: iconContainerSize,
@@ -205,7 +198,7 @@ class _ProcessStepState extends State<_ProcessStep> {
               ),
             ),
             
-            if (!widget.isLast && !isSmallScreen)
+            if (!isSmallScreen)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: AnimatedContainer(
@@ -218,8 +211,7 @@ class _ProcessStepState extends State<_ProcessStep> {
               ),
               
             const SizedBox(height: 16),
-            
-            // Fixed height container for title
+
             SizedBox(
               height: titleHeight,
               child: Center(
@@ -246,7 +238,6 @@ class _ProcessStepState extends State<_ProcessStep> {
             
             const SizedBox(height: 8),
             
-            // Fixed height container for description
             SizedBox(
               height: descriptionHeight,
               child: Center(

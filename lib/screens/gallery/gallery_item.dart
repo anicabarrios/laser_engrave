@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:laser_engrave/utils/colors.dart';
+import '../../../config/responsive_breakpoints.dart';
 
 class GalleryItem extends StatefulWidget {
   final Map<String, dynamic> item;
@@ -59,6 +60,9 @@ class _GalleryItemState extends State<GalleryItem>
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
+    
     return MouseRegion(
       onEnter: (_) {
         setState(() => _isHovered = true);
@@ -92,24 +96,16 @@ class _GalleryItemState extends State<GalleryItem>
                     blurRadius: 30,
                     offset: const Offset(0, 8),
                   ),
-                  // Subtle inner glow
-                  BoxShadow(
-                    color: Colors.white
-                        .withOpacity(0.1 * _elevationAnimation.value),
-                    blurRadius: 10,
-                    offset: const Offset(0, -2),
-                    spreadRadius: -1,
-                  ),
                 ],
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(24),
                 child: Stack(
+                  fit: StackFit.expand,
                   children: [
-                    _buildBackgroundImage(),
+                    _buildBackgroundImage(isSmallScreen),
                     _buildOverlays(),
-                    _buildContent(),
-                    _buildInteractiveElements(),
+                    _buildContent(isSmallScreen),
                   ],
                 ),
               ),
@@ -120,19 +116,19 @@ class _GalleryItemState extends State<GalleryItem>
     );
   }
 
-  Widget _buildBackgroundImage() {
+  Widget _buildBackgroundImage(bool isSmallScreen) {
     return Hero(
       tag: widget.item['imageUrl'],
       child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(widget.item['imageUrl']),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(_isHovered ? 0.3 : 0.2),
-              BlendMode.darken,
-            ),
-          ),
+        foregroundDecoration: BoxDecoration(
+          color: Colors.black.withOpacity(_isHovered ? 0.3 : 0.2),
+          backgroundBlendMode: BlendMode.darken,
+        ),
+        child: Image.asset(
+          widget.item['imageUrl'],
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: double.infinity,
         ),
       ),
     );
@@ -140,8 +136,8 @@ class _GalleryItemState extends State<GalleryItem>
 
   Widget _buildOverlays() {
     return Stack(
+      fit: StackFit.expand,
       children: [
-        // Base gradient
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -155,10 +151,9 @@ class _GalleryItemState extends State<GalleryItem>
             ),
           ),
         ),
-        // Animated accent gradient
         AnimatedOpacity(
           duration: const Duration(milliseconds: 200),
-          opacity: _isHovered ? 1.0 : 0.0,
+          opacity: _isHovered ? 0.2 : 0.0,
           child: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -176,15 +171,15 @@ class _GalleryItemState extends State<GalleryItem>
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(bool isSmallScreen) {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(isSmallScreen ? 20 : 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildCategoryBadge(),
           const Spacer(),
-          _buildTitleAndTags(),
+          _buildTitleAndTags(isSmallScreen),
         ],
       ),
     );
@@ -214,7 +209,7 @@ class _GalleryItemState extends State<GalleryItem>
     );
   }
 
-  Widget _buildTitleAndTags() {
+  Widget _buildTitleAndTags(bool isSmallScreen) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -225,19 +220,24 @@ class _GalleryItemState extends State<GalleryItem>
             fontWeight: FontWeight.bold,
             color: Colors.white,
             height: 1.2,
+            shadows: [
+              Shadow(
+                color: Colors.black.withOpacity(0.5),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Text(widget.item['title']),
         ),
         const SizedBox(height: 12),
-        Row(
-          children: [
-            ...(widget.item['tags'] as List<String>)
-                .take(2)
-                .map((tag) => Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: _buildTag(tag),
-                    )),
-          ],
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: (widget.item['tags'] as List<String>)
+              .take(isSmallScreen ? 3 : 2)
+              .map((tag) => _buildTag(tag))
+              .toList(),
         ),
       ],
     );
@@ -261,22 +261,7 @@ class _GalleryItemState extends State<GalleryItem>
         style: const TextStyle(
           color: Colors.white,
           fontSize: 12,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInteractiveElements() {
-    return AnimatedOpacity(
-      duration: const Duration(milliseconds: 200),
-      opacity: _isHovered ? 1.0 : 0.0,
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: AppColors.sapphire.withOpacity(0.3),
-            width: 2,
-          ),
-          borderRadius: BorderRadius.circular(24),
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
