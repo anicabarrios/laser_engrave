@@ -1,25 +1,21 @@
 #!/bin/bash
-
-# Make script exit if any command fails
+# Exit immediately if a command exits with a non-zero status
 set -e
 
-# Debug - print current directory
-echo "Current directory: $(pwd)"
+echo "Starting Flutter installation..."
 
-# Install Flutter
-git clone https://github.com/flutter/flutter.git --depth 1 --branch stable _flutter
-export PATH="$PATH:$(pwd)/_flutter/bin"
+# Install Flutter in a compact way
+git clone https://github.com/flutter/flutter.git --depth 1 -b stable _flutter
+export PATH="$PATH:$PWD/_flutter/bin"
 
-# Debug - show Flutter installation
-echo "Flutter installed at: $(pwd)/_flutter"
-
-# Check Flutter and set to web
+echo "Flutter installed. Running flutter doctor..."
 flutter doctor -v
+
+echo "Enabling web..."
 flutter config --enable-web
 
-# Build the project
+echo "Building project..."
 flutter build web --release
 
-# Debug - verify the build output
-echo "Build completed. Content of build directory:"
+echo "Build completed successfully!"
 ls -la build/web

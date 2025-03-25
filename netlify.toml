@@ -1,6 +1,3 @@
 [build]
-  command = "bash netlify_build_docker.sh"
+  command = "bash ./netlify_build_simple.sh"
   publish = "build/web"
-
-[build.environment]
-  NETLIFY_USE_YARN = "true"
