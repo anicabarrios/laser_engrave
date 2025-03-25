@@ -1,16 +1,19 @@
 # Laser Engraving 
 
-A responsive Flutter web application for a laser engraving company, optimized for all screen sizes including desktop, tablet, and mobile devices.
+A professional, responsive Flutter web application built for a laser engraving company, featuring elegant UI, smooth animations, and comprehensive business information.
 
-![Laser Engraving](https://via.placeholder.com/800x400)
+## 🔗 Live Demo
+[View live demo](https://laser-engraving.netlify.app/) 
+
+![Laser Engraving](./assets/images/screenshot.png)
 
 ## Overview
 
 This project is a comprehensive, modern website for a laser engraving business that showcases their services, portfolio, and contact information. The website features a responsive design that adapts seamlessly to different screen sizes and devices.
 
-## Features
+## ✨ Features
 
-- **Responsive Design**: Optimized for desktop, tablet, and mobile viewing experiences
+- **Fully Responsive Design**: Optimized for desktop, tablet, and mobile viewing experiences
 - **Animated UI**: Smooth transitions and animations enhance user experience
 - **Navigation**: Intuitive navigation with drawer menu for mobile devices
 - **Sections**:
@@ -24,102 +27,35 @@ This project is a comprehensive, modern website for a laser engraving business t
   - Category filters
   - Form validation
 
-## Technology Stack
+## 🛠️ Technologies Used
 
 - **Flutter**: Cross-platform UI toolkit
 - **Dart**: Programming language
 - **Material Design**: UI components following Material design guidelines
 - **Custom Animations**: Created with Flutter's animation controllers
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 lib/
-├── config/
-│   ├── app_config.dart
-│   ├── responsive_breakpoints.dart
-│   ├── ...
-├── models/
-│   ├── carousel_item.dart
-│   ├── feature.dart
-│   ├── gallery_item.dart
-│   ├── service.dart
-│   ├── team_member.dart
-│   ├── testimonial_model.dart
-│   ├── ...
-├── routes/
-│   ├── routes.dart
-├── screens/
-│   ├── about/
-│   │   ├── about_screen.dart
-│   │   ├── vision_section.dart
-│   │   ├── team_section.dart
-│   │   ├── process_section.dart
-│   │   ├── technology_section.dart
-│   ├── contact/
-│   │   ├── contact_screen.dart
-│   │   ├── contact_form.dart
-│   │   ├── contact_info.dart
-│   ├── gallery/
-│   │   ├── gallery_screen.dart
-│   │   ├── gallery_section.dart
-│   │   ├── gallery_grid.dart
-│   │   ├── gallery_item.dart
-│   │   ├── category_filter.dart
-│   │   ├── project_details_dialog.dart
-│   │   ├── gallery_data_provider.dart
-│   ├── home/
-│   │   ├── home_screen.dart
-│   │   ├── hero_section.dart
-│   │   ├── features_section.dart
-│   │   ├── project_showcase.dart
-│   │   ├── testimonials_section.dart
-│   │   ├── cta.dart
-│   │   ├── floating_contact_button.dart
-├── utils/
-│   ├── colors.dart
-│   ├── screen_utils.dart
-│   ├── ...
-├── widgets/
-│   ├── custom_drawer.dart
-│   ├── footer.dart
-│   ├── grid_pattern_painter.dart
-│   ├── hero.dart
-│   ├── ...
-├── main.dart
+├── config/              # App-wide configuration settings
+├── models/              # Data models
+├── screens/             # Main application screens
+│   ├── home/            # Home screen and related sections
+│   ├── about/           # About screen and related sections
+│   ├── gallery/         # Gallery screen and components
+│   ├── contact/         # Contact screen and form
+├── services/            # Service classes (e.g. EmailService)
+├── utils/               # Utility classes
+│   ├── colors.dart      # App color schemes
+│   ├── screen_utils.dart # Responsive helpers
+├── widgets/             # Reusable UI components
 ```
 
-## Responsive Design Features
-
-The application implements responsive design through:
-
-1. **ResponsiveBreakpoints**: A utility class that defines breakpoints for mobile, tablet, and desktop screens
-2. **ScreenUtils**: Helper methods for responsive padding and font sizes
-3. **Conditional Layouts**: Different layouts are rendered based on screen size
-4. **Flexible Sizing**: Using relative sizing (Expanded, FractionallySizedBox, etc.) instead of fixed dimensions
-5. **MediaQuery**: Accessing device screen information for responsive decisions
-6. **Adaptive Spacing**: Adjusting padding, margins, and gaps based on screen size
-
-## Key Components
-
-### Screens
-
-- **HomeScreen**: Landing page with various sections
-- **GalleryScreen**: Portfolio of work with filtering capabilities
-- **AboutScreen**: Company information, team, and processes
-- **ContactScreen**: Contact form and company information
-
-### Widgets
-
-- **HeroSection**: Reusable hero component with animations
-- **GridPatternPainter**: Custom painter for grid pattern backgrounds
-- **FloatingContactButton**: Quick access contact options
-- **CustomDrawer**: Navigation drawer for mobile screens
-- **Footer**: Site-wide footer with navigation and contact information
 
 ## Getting Started
 
-### Prerequisites
+### 🚀 Prerequisites
 
 - Flutter SDK (version 3.0.0 or later)
 - Dart SDK (version 2.17.0 or later)
@@ -129,7 +65,7 @@ The application implements responsive design through:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/laser_engrave.git
+   git clone https://github.com/anicabarrios/laser_engrave.git
    ```
 
 2. Navigate to the project directory:
@@ -145,34 +81,39 @@ The application implements responsive design through:
 4. Run the application:
    ```bash
    flutter run -d chrome
+
    ```
+## 📲 Building for Deployment
 
-## Deployment
+```
+ # Build the web app in release mode
 
-For web deployment:
+    flutter build web --release
 
-1. Build the web application:
-   ```bash
-   flutter build web
-   ```
+ # Output will be generated in the build/web directory
+```
 
-2. Deploy the content of the `build/web` directory to your web hosting service
+## 🌐 Deployment
 
-## Future Enhancements
+This project is deployed on Netlify. To deploy your own version:
 
-- Add internationalization support
-- Implement dark mode
-- Add search functionality
-- Integrate with backend APIs for form submission
-- Add animation for transitions between pages
-- Implement state management solution for larger scale
+1. Build the project as shown above 
+2. Create a new site on Netlify
+3. Upload the contents of the build/web directory or connect your GitHub repository
+4. Configure your deployment settings
+5. Deploy!
 
-## Credits
+## ⚙️ Configuration
+To configure the contact form's EmailJS integration:
 
-- Design inspiration: [Source]
-- Icons: Material Icons
-- Fonts: Montserrat
+1. Create an account on EmailJS
+2. Create a service and template
+3. Update the configuration in lib/services/email_service.dart
 
-## License
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome!
+
+## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.

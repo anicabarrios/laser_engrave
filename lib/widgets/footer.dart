@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../utils/colors.dart';
 import '../utils/screen_utils.dart';
 import '../config/responsive_breakpoints.dart';
@@ -375,23 +377,55 @@ class Footer extends StatelessWidget {
   }
 
   Widget _buildSocialIcon(IconData icon, String platform) {
-    return Container(
-      padding: const EdgeInsets.all(10), 
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: AppColors.sapphire.withOpacity(0.1),
-        border: Border.all(
-          color: AppColors.sapphire.withOpacity(0.2),
-          width: 1, 
+  // Define social media URLs
+  final Map<String, String> socialUrls = {
+    'Facebook': 'https://www.facebook.com',
+    'Instagram': 'https://www.instagram.com',
+    'LinkedIn': 'https://www.linkedin.com',
+  };
+  
+  return Tooltip(
+    message: platform,
+    child: InkWell(
+      onTap: () async {
+        // Provide haptic feedback
+        HapticFeedback.mediumImpact();
+        
+        // Get URL for the platform
+        final url = socialUrls[platform];
+        
+        // Launch URL if available
+        if (url != null) {
+          try {
+            if (!await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication)) {
+              throw Exception('Could not launch $url');
+            }
+          } catch (e) {
+            debugPrint('Error launching URL: $e');
+            // You could show a snackbar or dialog here to inform the user
+          }
+        }
+      },
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+        padding: const EdgeInsets.all(10), 
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.sapphire.withOpacity(0.1),
+          border: Border.all(
+            color: AppColors.sapphire.withOpacity(0.2),
+            width: 1, 
+          ),
+        ),
+        child: Icon(
+          icon,
+          size: 18, 
+          color: AppColors.sapphire,
         ),
       ),
-      child: Icon(
-        icon,
-        size: 18, 
-        color: AppColors.sapphire,
-      ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildDivider() {
     return Container(

@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../utils/colors.dart';
 import '../config/app_config.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
+
+  // Method to handle launching URLs
+  Future<void> _launchSocialMedia(String url) async {
+    try {
+      // Provide haptic feedback for better user experience
+      HapticFeedback.mediumImpact();
+      
+      // Launch the URL
+      if (!await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication)) {
+        throw Exception('Could not launch $url');
+      }
+    } catch (e) {
+      debugPrint('Error launching URL: $e');
+      // You could show a snackbar or dialog here to inform the user
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -352,40 +369,58 @@ class CustomDrawer extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildSocialButton(Icons.facebook, 'Facebook'),
-          _buildSocialButton(Icons.camera_alt_outlined, 'Instagram'),
           _buildSocialButton(
-              Icons.connect_without_contact_outlined, 'LinkedIn'),
+            Icons.facebook, 
+            'Facebook',
+            'https://www.facebook.com',
+          ),
+          _buildSocialButton(
+            Icons.camera_alt_outlined, 
+            'Instagram',
+            'https://www.instagram.com',
+          ),
+          _buildSocialButton(
+            Icons.connect_without_contact_outlined, 
+            'LinkedIn',
+            'https://www.linkedin.com',
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildSocialButton(IconData icon, String platform) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            AppColors.pearl.withOpacity(0.9),
-            AppColors.platinum.withOpacity(0.7),
-          ],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.darkColor.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
+  Widget _buildSocialButton(IconData icon, String platform, String url) {
+    return Tooltip(
+      message: platform,
+      child: InkWell(
+        onTap: () => _launchSocialMedia(url),
+        borderRadius: BorderRadius.circular(30),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.pearl.withOpacity(0.9),
+                AppColors.platinum.withOpacity(0.7),
+              ],
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.darkColor.withOpacity(0.05),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: Icon(
-        icon,
-        size: 20,
-        color: AppColors.sapphire,
+          child: Icon(
+            icon,
+            size: 20,
+            color: AppColors.sapphire,
+          ),
+        ),
       ),
     );
   }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../config/app_config.dart';
 import '../../utils/colors.dart';
 import '../../widgets/grid_pattern_painter.dart';
 
-/// A custom widget that adds a hover effect to its child.
-/// When hovered, the card scales up slightly and its shadow deepens.
 class HoverGlassCard extends StatefulWidget {
   final Widget child;
   const HoverGlassCard({Key? key, required this.child}) : super(key: key);
@@ -61,13 +61,17 @@ class _HoverGlassCardState extends State<HoverGlassCard> {
   }
 }
 
-/// A custom widget for social icons with a hover effect.
-/// When hovered, the icon scales up and its shadow becomes more pronounced.
 class HoverSocialIcon extends StatefulWidget {
   final IconData icon;
   final String label;
-  const HoverSocialIcon({Key? key, required this.icon, required this.label})
-      : super(key: key);
+  final String url;
+  
+  const HoverSocialIcon({
+    Key? key, 
+    required this.icon, 
+    required this.label, 
+    required this.url
+  }) : super(key: key);
 
   @override
   _HoverSocialIconState createState() => _HoverSocialIconState();
@@ -76,55 +80,74 @@ class HoverSocialIcon extends StatefulWidget {
 class _HoverSocialIconState extends State<HoverSocialIcon> {
   bool _isHovered = false;
 
-  @override
+  Future<void> _launchSocialMedia() async {
+    try {
+      // Provide haptic feedback
+      HapticFeedback.mediumImpact();
+      
+      // Launch the URL
+      if (!await launchUrl(Uri.parse(widget.url), mode: LaunchMode.externalApplication)) {
+        throw Exception('Could not launch ${widget.url}');
+      }
+    } catch (e) {
+      debugPrint('Error launching URL: $e');
+      // You could show a snackbar or dialog here to inform the user
+    }
+  }
+
+   @override
   Widget build(BuildContext context) {
     return Tooltip(
       message: widget.label,
-      child: MouseRegion(
-        onEnter: (_) => setState(() => _isHovered = true),
-        onExit: (_) => setState(() => _isHovered = false),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeInOut,
-          transform: Matrix4.identity()..scale(_isHovered ? 1.2 : 1.0),
-          transformAlignment: Alignment.center,
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                AppColors.pearl.withOpacity(0.9),
-                AppColors.platinum.withOpacity(0.7),
-              ],
+      child: GestureDetector(
+        onTap: _launchSocialMedia,
+        child: MouseRegion(
+          onEnter: (_) => setState(() => _isHovered = true),
+          onExit: (_) => setState(() => _isHovered = false),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeInOut,
+            transform: Matrix4.identity()..scale(_isHovered ? 1.2 : 1.0),
+            transformAlignment: Alignment.center,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  AppColors.pearl.withOpacity(0.9),
+                  AppColors.platinum.withOpacity(0.7),
+                ],
+              ),
+              boxShadow: _isHovered
+                  ? [
+                      BoxShadow(
+                        color: AppColors.darkColor.withOpacity(0.1),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                      ),
+                    ]
+                  : [
+                      BoxShadow(
+                        color: AppColors.darkColor.withOpacity(0.05),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
             ),
-            boxShadow: _isHovered
-                ? [
-                    BoxShadow(
-                      color: AppColors.darkColor.withOpacity(0.1),
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
-                    ),
-                  ]
-                : [
-                    BoxShadow(
-                      color: AppColors.darkColor.withOpacity(0.05),
-                      blurRadius: 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-          ),
-          child: Icon(
-            widget.icon,
-            size: 20,
-            color: AppColors.sapphire,
+            child: Icon(
+              widget.icon,
+              size: 20,
+              color: AppColors.sapphire,
+            ),
           ),
         ),
       ),
     );
   }
 }
+
 
 class ContactInfo extends StatelessWidget {
   const ContactInfo({super.key});
@@ -330,33 +353,44 @@ class ContactInfo extends StatelessWidget {
   }
 
   Widget _buildSocialLinksGlass() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Connect With Us',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: AppColors.darkTextColor,
-            letterSpacing: 0.3,
+  return const Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        'Connect With Us',
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: AppColors.darkTextColor,
+          letterSpacing: 0.3,
+        ),
+      ),
+      SizedBox(height: 16),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          HoverSocialIcon(
+            icon: Icons.facebook, 
+            label: 'Facebook',
+            url: 'https://www.facebook.com',
           ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            // Use the new HoverSocialIcon widget for each social icon.
-            HoverSocialIcon(icon: Icons.facebook, label: 'Facebook'),
-            const SizedBox(width: 16),
-            HoverSocialIcon(icon: Icons.camera_alt_outlined, label: 'Instagram'),
-            const SizedBox(width: 16),
-            HoverSocialIcon(icon: Icons.connect_without_contact_outlined, label: 'LinkedIn'),
-          ],
-        ),
-      ],
-    );
-  }
+          SizedBox(width: 16),
+          HoverSocialIcon(
+            icon: Icons.camera_alt_outlined, 
+            label: 'Instagram',
+            url: 'https://www.instagram.com',
+          ),
+          SizedBox(width: 16),
+          HoverSocialIcon(
+            icon: Icons.connect_without_contact_outlined, 
+            label: 'LinkedIn',
+            url: 'https://www.linkedin.com',
+          ),
+        ],
+      ),
+    ],
+  );
+}
 
   @override
   Widget build(BuildContext context) {
