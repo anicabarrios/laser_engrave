@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:laser_engrave/widgets/grid_pattern_painter.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:laser_engrave/widgets/footer.dart';
 import '../../utils/colors.dart';
@@ -9,6 +8,7 @@ import '../../config/responsive_breakpoints.dart';
 import '../../widgets/custom_drawer.dart';
 import '../../screens/home/floating_contact_button.dart';
 import '../../widgets/hero.dart';
+import '../../utils/smooth_scroll.dart';
 import 'contact_form.dart';
 import 'contact_info.dart';
 import '../../services/email_service.dart';
@@ -32,6 +32,7 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
   bool _isSubmitting = false;
 
   late AnimationController _animationController;
+  late SmoothScrollController _scrollController;
   final Map<String, bool> _visibleSections = {
     'hero': false,
     'form': false,
@@ -59,9 +60,10 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
   @override
   void initState() {
     super.initState();
+    _scrollController = SmoothScrollController(); 
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1200), 
     );
     _animationController.forward();
 
@@ -81,6 +83,7 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
     _emailController.dispose();
     _phoneController.dispose();
     _messageController.dispose();
+    _scrollController.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -125,7 +128,7 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
         if (mounted) {
           setState(() => _isSubmitting = false);
           _showErrorSnackbar('Failed to send message. Please try again.');
-          print('Email error: $e'); // For debugging
+          print('Email error: $e');
         }
       }
     }
@@ -143,224 +146,84 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
     });
   }
 
- void _showSuccessDialog() {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) {
-      final screenWidth = MediaQuery.of(context).size.width;
-      final isSmallScreen = ResponsiveBreakpoints.isMobile(screenWidth);
-      
-      return Dialog(
-        backgroundColor: Colors.transparent,
-        insetPadding: EdgeInsets.symmetric(
-          horizontal: isSmallScreen ? 16 : 40,
-          vertical: isSmallScreen ? 24 : 40,
-        ),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeOutQuint,
-          padding: EdgeInsets.all(isSmallScreen ? 24 : 32),
-          width: isSmallScreen ? double.infinity : 420,
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Container(
+          padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            // Brighter gradient with more white/pearl tones
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Colors.white,
                 AppColors.pearl,
-                AppColors.platinum.withOpacity(0.7),
+                AppColors.pearl.withOpacity(0.95),
               ],
-              stops: const [0.0, 0.6, 1.0],
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.sapphire.withOpacity(0.15),
-                blurRadius: 20,
-                spreadRadius: 5,
-              ),
-              BoxShadow(
-                color: Colors.white.withOpacity(0.5),
-                blurRadius: 15,
-                spreadRadius: -2,
-                offset: const Offset(-2, -2),
-              ),
-            ],
-            border: Border.all(
-              color: Colors.white.withOpacity(0.8),
-              width: 1.5,
             ),
           ),
-          child: Stack(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // Grid pattern overlay with reduced opacity
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: GridPatternPainter(
-                    color: AppColors.sapphire.withOpacity(0.04),
-                  ),
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: AppColors.sapphire.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.check_circle_outline,
+                  size: 48,
+                  color: AppColors.sapphire,
                 ),
               ),
-              
-              // Content
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Success icon with animation and brighter colors
-                  TweenAnimationBuilder<double>(
-                    duration: const Duration(milliseconds: 600),
-                    curve: Curves.elasticOut,
-                    tween: Tween<double>(begin: 0.5, end: 1.0),
-                    builder: (context, value, child) {
-                      return Transform.scale(
-                        scale: value,
-                        child: Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                AppColors.sapphire.withOpacity(0.8),
-                                AppColors.accentColor,
-                              ],
-                            ),
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.sapphire.withOpacity(0.3),
-                                blurRadius: 12,
-                                spreadRadius: 2,
-                              ),
-                              BoxShadow(
-                                color: Colors.white.withOpacity(0.9),
-                                blurRadius: 8,
-                                spreadRadius: -2,
-                                offset: const Offset(-2, -2),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.check_circle_outline,
-                            size: 48,
-                            color: Colors.white,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  
-                  const SizedBox(height: 24),
-                  
-                  // Title with refined typography
-                  TweenAnimationBuilder<double>(
-                    duration: const Duration(milliseconds: 800),
-                    curve: Curves.easeOutCubic,
-                    tween: Tween<double>(begin: 0.0, end: 1.0),
-                    builder: (context, value, child) {
-                      return Opacity(
-                        opacity: value,
-                        child: child,
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppColors.sapphire.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Text(
-                        'Message Sent Successfully',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.darkTextColor,
-                          letterSpacing: 0.5,
-                        ),
-                      ),
+              const SizedBox(height: 24),
+              const Text(
+                'Message Sent Successfully!',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.darkTextColor,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Thank you for reaching out. We will get back to you within 24 hours.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColors.darkTextColor.withOpacity(0.7),
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.sapphire,
+                    foregroundColor: AppColors.lightTextColor,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  
-                  const SizedBox(height: 20),
-                  
-                  // Message with improved styling
-                  AnimatedOpacity(
-                    duration: const Duration(milliseconds: 800),
-                    opacity: 1.0,
-                    curve: Curves.easeInOut,
-                    child: Text(
-                      'Thank you for reaching out. Our team will review your inquiry and contact you within 24 hours to discuss your project.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.darkTextColor.withOpacity(0.8),
-                        height: 1.6,
-                        letterSpacing: 0.2,
-                      ),
-                    ),
+                  child: const Text(
+                    'Great!',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  
-                  const SizedBox(height: 30),
-                  
-                  // Premium "Close" button with hover effect and brighter accent
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: Container(
-                      width: double.infinity,
-                      height: 56,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            AppColors.sapphire,
-                            AppColors.accentColor,
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.sapphire.withOpacity(0.3),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.transparent,
-                          foregroundColor: AppColors.lightTextColor,
-                          shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text(
-                          'Close',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
         ),
-      );
-    },
-  );
-}
+      ),
+    );
+  }
 
   void _showErrorSnackbar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -401,7 +264,7 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
           opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
             CurvedAnimation(
               parent: _animationController,
-              curve: const Interval(0.2, 0.8, curve: Curves.easeOut),
+              curve: const Interval(0.0, 0.5, curve: Curves.easeInOut),
             ),
           ),
           child: AppBar(
@@ -415,8 +278,15 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
       drawer: const CustomDrawer(),
       body: Stack(
         children: [
-          SingleChildScrollView(
-            child: Column(
+          Scrollbar(
+            controller: _scrollController,
+            thumbVisibility: false,
+            child: ListView(
+              controller: _scrollController,
+              padding: EdgeInsets.zero,
+              physics: const SmoothScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
+              ),
               children: [
                 // Hero Section
                 _buildAnimatedSection(
@@ -426,7 +296,7 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
                     subtitle: 'Share your vision, and we\'ll bring it to life with precision',
                   ),
                   initialDelay: 0.0,
-                  useScale: true,
+                  useScale: false,
                 ),
 
                 // Contact Form and Info
@@ -466,14 +336,14 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
                                     setState(() => _preferredDate = date);
                                   },
                                 ),
-                                initialDelay: 0.2,
+                                initialDelay: 0.1,
                                 useScale: true,
                               ),
                               const SizedBox(height: 40),
                               _buildAnimatedSection(
                                 'info',
                                 const ContactInfo(),
-                                initialDelay: 0.3,
+                                initialDelay: 0.15,
                               ),
                             ],
                           )
@@ -507,7 +377,7 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
                                       setState(() => _preferredDate = date);
                                     },
                                   ),
-                                  initialDelay: 0.2,
+                                  initialDelay: 0.1,
                                   useScale: true,
                                 ),
                               ),
@@ -516,7 +386,7 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
                                 child: _buildAnimatedSection(
                                   'info',
                                   const ContactInfo(),
-                                  initialDelay: 0.3,
+                                  initialDelay: 0.15,
                                 ),
                               ),
                             ],
@@ -528,7 +398,7 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
                 _buildAnimatedSection(
                   'footer',
                   const Footer(),
-                  initialDelay: 0.4,
+                  initialDelay: 0.2,
                 ),
               ],
             ),
@@ -542,7 +412,7 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
             ).animate(
               CurvedAnimation(
                 parent: _animationController,
-                curve: const Interval(0.4, 1.0, curve: Curves.easeOut),
+                curve: const Interval(0.4, 0.9, curve: Curves.easeOutCubic),
               ),
             ),
             child: const FloatingContactButton(),
@@ -561,26 +431,26 @@ class _ContactScreenState extends State<ContactScreen> with SingleTickerProvider
     return VisibilityDetector(
       key: Key(key),
       onVisibilityChanged: (visibilityInfo) {
-        _onSectionVisibilityChanged(key, visibilityInfo.visibleFraction > 0.3);
+        _onSectionVisibilityChanged(key, visibilityInfo.visibleFraction > 0.2);
       },
       child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 800),
+        duration: const Duration(milliseconds: 650), 
         curve: Curves.easeOut,
-        opacity: _visibleSections[key] ?? false ? 1.0 : 0.0,
+        opacity: _visibleSections[key] ?? false ? 1.0 : 0.4,
         child: AnimatedSlide(
-          duration: const Duration(milliseconds: 800),
-          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 650),
+          curve: Curves.easeOutCubic,
           offset: _visibleSections[key] ?? false
               ? Offset.zero
-              : const Offset(0, 0.1),
+              : const Offset(0, 0.03),
           child: useScale
               ? TweenAnimationBuilder<double>(
                   tween: Tween(
-                    begin: 0.8,
-                    end: _visibleSections[key] ?? false ? 1.0 : 0.8,
+                    begin: 0.97,
+                    end: _visibleSections[key] ?? false ? 1.0 : 0.97,
                   ),
-                  duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeOut,
+                  duration: const Duration(milliseconds: 550),
+                  curve: Curves.easeOutCubic,
                   builder: (context, scale, child) {
                     return Transform.scale(
                       scale: scale,

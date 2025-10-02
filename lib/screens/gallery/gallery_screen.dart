@@ -6,6 +6,7 @@ import 'package:laser_engrave/utils/colors.dart';
 import 'package:laser_engrave/utils/screen_utils.dart';
 import 'package:laser_engrave/config/responsive_breakpoints.dart';
 import 'package:laser_engrave/widgets/hero.dart';
+import 'package:laser_engrave/utils/smooth_scroll.dart';
 import 'gallery_section.dart';
 
 class GalleryScreen extends StatefulWidget {
@@ -16,7 +17,7 @@ class GalleryScreen extends StatefulWidget {
 }
 
 class _GalleryScreenState extends State<GalleryScreen> with SingleTickerProviderStateMixin {
-  final ScrollController _scrollController = ScrollController();
+  late SmoothScrollController _scrollController;
   late AnimationController _animationController;
   
   final Map<String, bool> _visibleSections = {
@@ -28,9 +29,10 @@ class _GalleryScreenState extends State<GalleryScreen> with SingleTickerProvider
   @override
   void initState() {
     super.initState();
+    _scrollController = SmoothScrollController();
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1200), 
     );
     _animationController.forward();
 
@@ -74,7 +76,7 @@ class _GalleryScreenState extends State<GalleryScreen> with SingleTickerProvider
           opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
             CurvedAnimation(
               parent: _animationController,
-              curve: const Interval(0.2, 0.8, curve: Curves.easeOut),
+              curve: const Interval(0.0, 0.5, curve: Curves.easeInOut),
             ),
           ),
           child: AppBar(
@@ -86,9 +88,15 @@ class _GalleryScreenState extends State<GalleryScreen> with SingleTickerProvider
       ),
       backgroundColor: AppColors.lightColor,
       drawer: const CustomDrawer(),
-      body: SingleChildScrollView(
+      body: Scrollbar(
         controller: _scrollController,
-        child: Column(
+        thumbVisibility: false,
+        child: ListView(
+          controller: _scrollController,
+          padding: EdgeInsets.zero,
+          physics: const SmoothScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
           children: [
             // Hero Section
             _buildAnimatedSection(
@@ -98,10 +106,10 @@ class _GalleryScreenState extends State<GalleryScreen> with SingleTickerProvider
                 subtitle: 'Explore our portfolio of precision engravings',
               ),
               initialDelay: 0.0,
-              useScale: true,
+              useScale: false,
             ),
 
-            // Gallery Section (passing the selected category)
+            // Gallery Section 
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: ScreenUtils.getResponsivePadding(context),
@@ -110,7 +118,7 @@ class _GalleryScreenState extends State<GalleryScreen> with SingleTickerProvider
               child: _buildAnimatedSection(
                 'gallery',
                 GallerySection(initialCategory: selectedCategory),
-                initialDelay: 0.2,
+                initialDelay: 0.1,
               ),
             ),
 
@@ -118,7 +126,7 @@ class _GalleryScreenState extends State<GalleryScreen> with SingleTickerProvider
             _buildAnimatedSection(
               'footer',
               const Footer(),
-              initialDelay: 0.3,
+              initialDelay: 0.15,
             ),
           ],
         ),
@@ -135,26 +143,26 @@ class _GalleryScreenState extends State<GalleryScreen> with SingleTickerProvider
     return VisibilityDetector(
       key: Key(key),
       onVisibilityChanged: (visibilityInfo) {
-        _onSectionVisibilityChanged(key, visibilityInfo.visibleFraction > 0.3);
+        _onSectionVisibilityChanged(key, visibilityInfo.visibleFraction > 0.2);
       },
       child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 800),
+        duration: const Duration(milliseconds: 600), 
         curve: Curves.easeOut,
-        opacity: _visibleSections[key] ?? false ? 1.0 : 0.0,
+        opacity: _visibleSections[key] ?? false ? 1.0 : 0.4,
         child: AnimatedSlide(
-          duration: const Duration(milliseconds: 800),
-          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeOutCubic,
           offset: _visibleSections[key] ?? false
               ? Offset.zero
-              : const Offset(0, 0.1),
+              : const Offset(0, 0.03),
           child: useScale
               ? TweenAnimationBuilder<double>(
                   tween: Tween(
-                    begin: 0.8,
-                    end: _visibleSections[key] ?? false ? 1.0 : 0.8,
+                    begin: 0.97,
+                    end: _visibleSections[key] ?? false ? 1.0 : 0.97,
                   ),
                   duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeOut,
+                  curve: Curves.easeOutCubic,
                   builder: (context, scale, child) {
                     return Transform.scale(
                       scale: scale,

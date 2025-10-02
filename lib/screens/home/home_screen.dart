@@ -4,6 +4,7 @@ import 'package:laser_engrave/widgets/footer.dart';
 import '../../widgets/custom_drawer.dart';
 import '../../screens/home/floating_contact_button.dart';
 import '../../utils/colors.dart';
+import '../../utils/smooth_scroll.dart';
 import './hero_section.dart';
 import './features_section.dart';
 import './testimonials_section.dart';
@@ -18,7 +19,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
-  final ScrollController _scrollController = ScrollController();
+  late SmoothScrollController _scrollController;
   late AnimationController _animationController;
   
   // Track visibility of each section
@@ -34,6 +35,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+
+    _scrollController = SmoothScrollController();
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
@@ -73,7 +76,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
             CurvedAnimation(
               parent: _animationController,
-              curve: const Interval(0.2, 0.8, curve: Curves.easeOut),
+              curve: const Interval(0.0, 0.5, curve: Curves.easeInOut),
             ),
           ),
           child: AppBar(
@@ -87,30 +90,30 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       drawer: const CustomDrawer(),
       body: Stack(
         children: [
-          SingleChildScrollView(
+          Scrollbar(
             controller: _scrollController,
-            child: Column(
+            thumbVisibility: false,
+            child: ListView(
+              controller: _scrollController,
+              padding: EdgeInsets.zero,
+              physics: const SmoothScrollPhysics(
+                parent: AlwaysScrollableScrollPhysics(),
+              ),
               children: [
-                // Hero Section with initial load animation
-                _buildAnimatedSection(
-                  'hero',
-                  const HeroSection(),
-                  initialDelay: 0.0,
-                  useScale: true,
-                ),
+                const HeroSection(),
 
                 // Features Section
                 _buildAnimatedSection(
                   'features',
                   const FeaturesSection(),
-                  initialDelay: 0.2,
+                  initialDelay: 0.1,
                 ),
 
                 // Project Showcase
                 _buildAnimatedSection(
                   'projects',
                   const ProjectSection(),
-                  initialDelay: 0.3,
+                  initialDelay: 0.15,
                   useScale: true,
                 ),
 
@@ -118,14 +121,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 _buildAnimatedSection(
                   'testimonials',
                   const TestimonialSection(),
-                  initialDelay: 0.4,
+                  initialDelay: 0.2,
                 ),
 
                 // Call to Action
                 _buildAnimatedSection(
                   'cta',
                   const CTASection(),
-                  initialDelay: 0.5,
+                  initialDelay: 0.25,
                   useScale: true,
                 ),
 
@@ -133,13 +136,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 _buildAnimatedSection(
                   'footer',
                   const Footer(),
-                  initialDelay: 0.6,
+                  initialDelay: 0.3,
                 ),
               ],
             ),
           ),
 
-          // Floating Contact Button with slide in animation
           SlideTransition(
             position: Tween<Offset>(
               begin: const Offset(1, 0),
@@ -147,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             ).animate(
               CurvedAnimation(
                 parent: _animationController,
-                curve: const Interval(0.4, 1.0, curve: Curves.easeOut),
+                curve: const Interval(0.4, 0.9, curve: Curves.easeOutCubic),
               ),
             ),
             child: const FloatingContactButton(),
@@ -166,26 +168,26 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     return VisibilityDetector(
       key: Key(key),
       onVisibilityChanged: (visibilityInfo) {
-        _onSectionVisibilityChanged(key, visibilityInfo.visibleFraction > 0.3);
+        _onSectionVisibilityChanged(key, visibilityInfo.visibleFraction > 0.2);
       },
       child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 800),
+        duration: const Duration(milliseconds: 600), 
         curve: Curves.easeOut,
-        opacity: _visibleSections[key] ?? false ? 1.0 : 0.0,
+        opacity: _visibleSections[key] ?? false ? 1.0 : 0.4, 
         child: AnimatedSlide(
-          duration: const Duration(milliseconds: 800),
-          curve: Curves.easeOut,
+          duration: const Duration(milliseconds: 600), 
+          curve: Curves.easeOutCubic,
           offset: _visibleSections[key] ?? false
               ? Offset.zero
-              : const Offset(0, 0.1),
+              : const Offset(0, 0.03), 
           child: useScale
               ? TweenAnimationBuilder<double>(
                   tween: Tween(
-                    begin: 0.8,
-                    end: _visibleSections[key] ?? false ? 1.0 : 0.8,
+                    begin: 0.97,
+                    end: _visibleSections[key] ?? false ? 1.0 : 0.97,
                   ),
                   duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeOut,
+                  curve: Curves.easeOutCubic,
                   builder: (context, scale, child) {
                     return Transform.scale(
                       scale: scale,

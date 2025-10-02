@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:laser_engrave/routes/routes.dart';
 import 'utils/colors.dart';
+import 'utils/smooth_scroll.dart';
 
 void main() {
   runApp(const LaserEngraveApp());
@@ -17,6 +18,7 @@ class LaserEngraveApp extends StatelessWidget {
       routes: appRoutes,
       initialRoute: '/',
       debugShowCheckedModeBanner: false,
+      scrollBehavior: const SmoothScrollBehavior(),
     );
   }
 }
